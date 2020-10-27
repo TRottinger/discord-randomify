@@ -24,6 +24,7 @@ async def on_message(message):
         channel_selected = message.channel
         author_selected = message.author.mention
         args = parse_args(message.content)
+        print('Receiving request from ' + str(author_selected) + ' in server ' + str(message.guild))
         streamer, viewers, game, res_string = randomizer.get_random_twitch_stream_with_args(args)
         if res_string != '':
             await channel_selected.send(author_selected + ': ' + res_string)
