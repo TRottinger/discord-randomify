@@ -5,14 +5,14 @@ import twitch
 def get_random_twitch_stream_with_args(args):
     res_string = ''
 
-    game_id_picked = ''
-    game_name_picked = ''
     if args['game'] != 'any':
         game_name_picked = args['game']
         game_id_picked = twitch.get_game_by_name(game_name_picked)
 
-    if game_id_picked == '':
-        res_string += 'Oops! Sorry, your game ' + args['game'] + ' was not found! :(\n'
+        if game_id_picked == '':
+            res_string += 'Oops! Sorry, your game ' + args['game'] + ' was not found! :(\n'
+            return 0, 0, 0, res_string
+    else:
         games, weighted_id_game_selector = twitch.get_twitch_games()
 
         game_id_picked = random.choice(weighted_id_game_selector)
