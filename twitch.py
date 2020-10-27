@@ -2,7 +2,7 @@ import requests
 import random
 import os
 from dotenv import load_dotenv
-from url_builder import build_url
+from url_builder import build_twitch_streams_url
 
 load_dotenv()
 CLIENT_ID = os.getenv('TWITCH_CLIENT_ID')
@@ -43,22 +43,6 @@ def get_twitch_games():
     return game_dict
 
 
-def build_streams_url(url, first, game_id, after):
-    return_url = ''
-    if game_id != '0':
-        if after != '0':
-            return_url = build_url(url, "first=" + first, "game_id=" + game_id, "after=" + after)
-        else:
-            return_url = build_url(url, "first=" + first, "game_id=" + game_id)
-    else:
-        if after != '0':
-            return_url = build_url(url, "first=" + first, "after=" + after)
-        else:
-            return_url = build_url(url, "first=" + first)
-
-    return return_url
-
-
 def get_twitch_streams(game_id=0):
 
     streams_request_url = 'https://api.twitch.tv/helix/streams'
@@ -74,7 +58,7 @@ def get_twitch_streams(game_id=0):
     streamers = []
 
     for i in range(0, 10):
-        request_url = build_streams_url(streams_request_url, '100', str(game_id), after)
+        request_url = build_twitch_streams_url(streams_request_url, '100', str(game_id), after)
 
         response = requests.get(request_url, headers=headers)
 
