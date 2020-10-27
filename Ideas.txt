@@ -1,0 +1,5 @@
+Add more games. Maybe do a few queries
+Add weight to get more popular categories.
+Give option to do a deeper search
+Make trigger less restrictive
+Specify language?
