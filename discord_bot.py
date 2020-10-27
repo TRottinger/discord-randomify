@@ -3,6 +3,7 @@ import os
 import discord
 from dotenv import load_dotenv
 import randomizer
+from parse_args import parse_args
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -19,13 +20,17 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
-    if message.content == '.randomTwitch' or message.content == '.rt':
+    if '.randomTwitch' in message.content or '.rt' in message.content:
         channel_selected = message.channel
         author_selected = message.author.mention
-        streamer, viewers, game = randomizer.get_random_twitch_stream()
-        await channel_selected.send(
-            author_selected + ' - You got ' + streamer + ' playing ' + game + ' with a viewer count of ' + viewers)
-        await channel_selected.send('https://twitch.tv/' + streamer)
+        args = parse_args(message.content)
+        streamer, viewers, game, res_string = randomizer.get_random_twitch_stream_with_args(args)
+        if res_string != '':
+            await channel_selected.send(author_selected + ': ' + res_string)
+        else:
+            await channel_selected.send(
+                author_selected + ' - You got ' + streamer + ' playing ' + game + ' with a viewer count of ' + viewers)
+            await channel_selected.send('https://twitch.tv/' + streamer)
 
 
 client.run(TOKEN)
