@@ -2,49 +2,40 @@ import random
 from discord_bot_randomizer import twitch
 
 
-def get_random_twitch_stream_with_args(args):
-    res_string = ''
-
-    if args['game'] != 'any':
-        game_name_picked = args['game']
-        game_id_picked = twitch.get_game_by_name(game_name_picked)
-        print('Selecting game: ' + game_name_picked)
-
-        if game_id_picked == '':
-            res_string += 'Oops! Sorry, your game ' + args['game'] + ' was not found! :(\n'
-            return 0, 0, 0, res_string
-    else:
-        games, weighted_id_game_selector = twitch.get_twitch_games()
-
-        game_id_picked = random.choice(weighted_id_game_selector)
-        game_name_picked = str(games.get(game_id_picked))
-
-    streamers = twitch.get_twitch_streams(game_id_picked)
+def get_streamer(game_id):
+    streamers = twitch.get_twitch_streams(game_id)
 
     streamer = random.choice(streamers)
 
     streamer_login_name = twitch.get_streamer_login_name(streamer)
 
+    return streamer, streamer_login_name
+
+
+def get_random_twitch_stream_by_game(game_selected):
+
+    game_name_picked = game_selected
+    game_id_picked = twitch.get_game_by_name(game_name_picked)
+    print('Selecting game: ' + game_name_picked)
+
+    if game_id_picked == '':
+        return None, None, None
+
+    streamer, streamer_login_name = get_streamer(game_id_picked)
     print('Returning: ' + str(streamer_login_name), str(streamer['viewer_count']), game_name_picked)
-    return str(streamer_login_name), str(streamer['viewer_count']), game_name_picked, res_string
+    return str(streamer_login_name), str(streamer['viewer_count']), game_name_picked
 
 
 def get_random_twitch_stream():
-    res_string = ''
 
     games, weighted_id_game_selector = twitch.get_twitch_games()
 
     game_id_picked = random.choice(weighted_id_game_selector)
     game_name_picked = str(games.get(game_id_picked))
 
-    streamers = twitch.get_twitch_streams(game_id_picked)
-
-    streamer = random.choice(streamers)
-
-    streamer_login_name = twitch.get_streamer_login_name(streamer)
-
+    streamer, streamer_login_name = get_streamer(game_id_picked)
     print('Returning: ' + str(streamer_login_name), str(streamer['viewer_count']), game_name_picked)
-    return str(streamer_login_name), str(streamer['viewer_count']), game_name_picked, res_string
+    return str(streamer_login_name), str(streamer['viewer_count']), game_name_picked
 
 
 if __name__ == '__main__':
