@@ -2,8 +2,8 @@ import os
 
 import discord
 from dotenv import load_dotenv
-import randomizer
-from parse_args import parse_args
+from discord_bot_randomizer import randomizer
+from discord_bot_randomizer.parse_args import parse_args
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')

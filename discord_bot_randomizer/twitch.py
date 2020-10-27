@@ -1,7 +1,7 @@
 import requests
 import os
 from dotenv import load_dotenv
-from url_builder import build_twitch_streams_url
+from discord_bot_randomizer.url_builder import build_twitch_streams_url
 
 # Load twitch client id and secret into file
 load_dotenv()

@@ -1,5 +1,5 @@
 import random
-import twitch
+from discord_bot_randomizer import twitch
 
 
 def get_random_twitch_stream_with_args(args):
