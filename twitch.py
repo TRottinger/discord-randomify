@@ -1,9 +1,9 @@
 import requests
-import random
 import os
 from dotenv import load_dotenv
 from url_builder import build_twitch_streams_url
 
+# Load twitch client id and secret into file
 load_dotenv()
 CLIENT_ID = os.getenv('TWITCH_CLIENT_ID')
 CLIENT_SECRET = os.getenv('TWITCH_CLIENT_SECRET')
@@ -43,6 +43,7 @@ def get_twitch_games():
     return game_dict
 
 
+# Returns a list of streamers
 def get_twitch_streams(game_id=0):
 
     streams_request_url = 'https://api.twitch.tv/helix/streams'
@@ -74,6 +75,7 @@ def get_twitch_streams(game_id=0):
     return streamers
 
 
+# Returns streamers user name for twitch link
 def get_streamer_login_name(streamer):
     access_token = get_twitch_access_token()
 

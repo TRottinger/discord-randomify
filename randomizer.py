@@ -1,13 +1,5 @@
-import requests
 import random
-import os
-from dotenv import load_dotenv
 import twitch
-from url_builder import build_url
-
-load_dotenv()
-CLIENT_ID = os.getenv('TWITCH_CLIENT_ID')
-CLIENT_SECRET = os.getenv('TWITCH_CLIENT_SECRET')
 
 
 def get_random_twitch_stream():
