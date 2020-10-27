@@ -4,9 +4,9 @@ import twitch
 
 def get_random_twitch_stream():
 
-    games = twitch.get_twitch_games()
+    games, weighted_id_game_selector = twitch.get_twitch_games()
 
-    game_id_picked = random.choice(list(games))
+    game_id_picked = random.choice(weighted_id_game_selector)
     game_name_picked = str(games.get(game_id_picked))
 
     streamers = twitch.get_twitch_streams(game_id_picked)

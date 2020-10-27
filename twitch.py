@@ -36,11 +36,16 @@ def get_twitch_games():
     games = response.json()['data']
 
     game_dict = {}
+    weighted_game_ids = []
+    weight = 10
 
     for game in games:
         game_dict[game['id']] = game['name']
+        weighted_game_ids.extend([game['id']] * weight)
+        if weight != 1:
+            weight -= 1
 
-    return game_dict
+    return game_dict, weighted_game_ids
 
 
 # Returns a list of streamers

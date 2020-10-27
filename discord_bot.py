@@ -19,7 +19,7 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
-    if message.content == '.randomTwitch':
+    if message.content == '.randomTwitch' or message.content == '.rt':
         channel_selected = message.channel
         author_selected = message.author.mention
         streamer, viewers, game = randomizer.get_random_twitch_stream()
