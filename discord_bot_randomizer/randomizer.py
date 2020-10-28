@@ -1,4 +1,6 @@
 import random
+import time
+from asyncio import wait
 
 import requests
 import wikipedia
@@ -50,13 +52,22 @@ def get_random_twitch_stream():
 
 def get_random_wiki_article():
     page = wikipedia.random(1)
-    info = wikipedia.page(page)
+    try:
+        info = wikipedia.page(page)
+    except wikipedia.DisambiguationError as e:
+        s = random.choice(e.options)
+        info = wikipedia.page(s)
     url = info.url
     return str(url)
 
 
 def get_random_subreddit():
-    result = urllib.request.urlopen('https://www.reddit.com/r/random')
+    time.sleep(1)
+    try:
+        result = urllib.request.urlopen('https://www.reddit.com/r/random')
+    except urllib.error.HTTPError:
+        result = 'I\'m being rate limited :('
+        return str(result)
     return str(result.url)
 
 
