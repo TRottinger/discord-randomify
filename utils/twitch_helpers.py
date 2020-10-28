@@ -1,12 +1,20 @@
 import requests
 import os
 from dotenv import load_dotenv
-from discord_bot_randomizer.url_builder import build_twitch_streams_url
+from utils.url_builder import build_twitch_streams_url
+import random
+
 
 # Load twitch client id and secret into file
 load_dotenv()
 CLIENT_ID = os.getenv('TWITCH_CLIENT_ID')
 CLIENT_SECRET = os.getenv('TWITCH_CLIENT_SECRET')
+
+
+class Streamer:
+    def __init__(self, name=None, viewers=None):
+        self.login_name = name
+        self.viewers = viewers
 
 
 def get_twitch_access_token():
@@ -83,8 +91,11 @@ def get_twitch_streams(game_id=0, language=''):
 
         response = requests.get(request_url, headers=headers)
 
-        for data in response.json()['data']:
-            streamers.append(data)
+        try:
+            for data in response.json()['data']:
+                streamers.append(data)
+        except KeyError:
+            return None
 
         if str(response.json()['pagination']) == '{}':
             break
@@ -93,6 +104,22 @@ def get_twitch_streams(game_id=0, language=''):
             after = pag
 
     return streamers
+
+
+def get_streamer(game_id):
+    streamers = get_twitch_streams(game_id)
+
+    if streamers is None:
+        return None
+
+    streamer = random.choice(streamers)
+
+    streamer_login_name = get_streamer_login_name(streamer)
+    viewer_count = streamer['viewer_count']
+
+    my_streamer = Streamer(streamer_login_name, viewer_count)
+
+    return my_streamer
 
 
 # Returns streamers user name for twitch link
