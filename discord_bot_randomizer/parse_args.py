@@ -35,6 +35,21 @@ def choose_from_available_opts(input_string):
     elif input_string.startswith('random'):
         opt = 'random'
         params = ''
+    elif input_string.startswith('diceroll'):
+        opt = 'diceroll'
+        params = ''
+    elif input_string.startswith('coinflip'):
+        opt = 'coinflip'
+        params = ''
+    elif input_string.startswith('wiki'):
+        opt = 'wiki'
+        params = ''
+    elif input_string.startswith('reddit'):
+        opt = 'reddit'
+        params = ''
+    elif input_string.startswith('streamer'):
+        opt = 'streamer'
+        params = ''
     elif input_string.startswith('game '):
         opt = 'game'
         split_string = input_string.split('game ')

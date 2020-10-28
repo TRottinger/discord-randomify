@@ -55,7 +55,6 @@ def get_game_by_name(game_name):
         'client-id': CLIENT_ID,
         'Authorization': 'Bearer ' + access_token,
     }
-
     response = requests.get('https://api.twitch.tv/helix/games?name=' + game_name, headers=headers)
     games = response.json()['data']
     if len(games) > 0:
