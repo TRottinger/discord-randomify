@@ -4,18 +4,15 @@
 def build_url(url, *argv):
     if len(argv) == 0:
         return url
-
+    url += '?'
+    
     # start building http request
-    first = True
-    url_builder = url + '?'
     for arg in argv:
-        if not first:
-            url_builder += '&'
-        else:
-            first = False
-        url_builder += arg
-
-    return url_builder
+        url += arg
+        url += '&'
+    url = url[:-1]
+    
+    return url
 
 
 def build_twitch_streams_url(url, first, game_id, after):

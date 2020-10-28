@@ -1,7 +1,7 @@
 import requests
 import os
 from dotenv import load_dotenv
-from url_builder import build_twitch_streams_url
+from discord_bot_randomizer.url_builder import build_twitch_streams_url
 
 # Load twitch client id and secret into file
 load_dotenv()
@@ -36,15 +36,35 @@ def get_twitch_games():
     games = response.json()['data']
 
     game_dict = {}
+    weighted_game_ids = []
+    weight = 10
 
     for game in games:
         game_dict[game['id']] = game['name']
+        weighted_game_ids.extend([game['id']] * weight)
+        if weight != 1:
+            weight -= 1
 
-    return game_dict
+    return game_dict, weighted_game_ids
+
+
+def get_game_by_name(game_name):
+    access_token = get_twitch_access_token()
+
+    headers = {
+        'client-id': CLIENT_ID,
+        'Authorization': 'Bearer ' + access_token,
+    }
+    response = requests.get('https://api.twitch.tv/helix/games?name=' + game_name, headers=headers)
+    games = response.json()['data']
+    if len(games) > 0:
+        return games[0]['id']
+    else:
+        return ''
 
 
 # Returns a list of streamers
-def get_twitch_streams(game_id=0):
+def get_twitch_streams(game_id=0, language=''):
 
     streams_request_url = 'https://api.twitch.tv/helix/streams'
 
