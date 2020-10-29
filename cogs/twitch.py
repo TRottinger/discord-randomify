@@ -7,9 +7,9 @@ class Twitch(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="streamer", description="Get a link to a random streamer", aliases=["stream"],
+    @commands.command(name="twitch", description="Get a link to a random streamer", aliases=["stream", "streamer"],
                       brief="Get a random twitch streamer")
-    async def streamer(self, ctx):
+    async def twitch(self, ctx):
         games, weighted_id_game_selector = twitch_helpers.get_twitch_games()
 
         game_id_picked = random.choice(weighted_id_game_selector)
@@ -26,10 +26,10 @@ class Twitch(commands.Cog):
                 streamer.viewers) + ' viewers at https://www.twitch.tv/' + streamer.login_name
             await ctx.send(result_string)
 
-    @commands.command(name="game_stream", description="Get a link to a random streamer playing a specific game",
-                      aliases=["game-stream", "game.stream"], usage="game_name",
+    @commands.command(name="twitch_game", description="Get a link to a random streamer playing a specific game",
+                      aliases=["game_stream", "twitchgame"], usage="<game_name>",
                       brief="Get a random twitch streamer by game")
-    async def game_stream(self, ctx, *, arg):
+    async def twitch_game(self, ctx, *, arg):
         game_name_picked = arg
         game_id_picked = twitch_helpers.get_game_by_name(game_name_picked)
 
@@ -47,8 +47,8 @@ class Twitch(commands.Cog):
                 streamer.viewers) + ' viewers at https://www.twitch.tv/' + streamer.login_name
             await ctx.send(result_string)
 
-    @game_stream.error
-    async def game_stream_error(self, ctx, error):
+    @twitch_game.error
+    async def twitch_game_error(self, ctx, error):
         author = ctx.author.mention
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send(author + ' - Please provide an argument')
