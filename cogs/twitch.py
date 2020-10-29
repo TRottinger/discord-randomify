@@ -7,8 +7,8 @@ class Twitch(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="streamer", description="Get a link to a random streamer", aliases=["stream"])
-    @commands.guild_only()
+    @commands.command(name="streamer", description="Get a link to a random streamer", aliases=["stream"],
+                      brief="Get a random twitch streamer")
     async def streamer(self, ctx):
         games, weighted_id_game_selector = twitch_helpers.get_twitch_games()
 
@@ -27,8 +27,8 @@ class Twitch(commands.Cog):
             await ctx.send(result_string)
 
     @commands.command(name="game_stream", description="Get a link to a random streamer playing a specific game",
-                      aliases=["game-stream", "game.stream"], usage="game_name")
-    @commands.guild_only()
+                      aliases=["game-stream", "game.stream"], usage="game_name",
+                      brief="Get a random twitch streamer by game")
     async def game_stream(self, ctx, *, arg):
         game_name_picked = arg
         game_id_picked = twitch_helpers.get_game_by_name(game_name_picked)

@@ -7,8 +7,7 @@ class Reddit(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="subreddit", description="Get a link to a random subreddit")
-    @commands.guild_only()
+    @commands.command(name="subreddit", description="Get a link to a random subreddit", brief="Get a random subreddit")
     async def subreddit(self, ctx):
         try:
             urlopen = urllib.request.urlopen('https://www.reddit.com/r/random')
