@@ -1,4 +1,6 @@
 # discord-randomizer
+[![CodeFactor](https://www.codefactor.io/repository/github/trottinger/discord-randomizer/badge/dev)](https://www.codefactor.io/repository/github/trottinger/discord-randomizer/overview/dev)
+
 Code for a discord bot that produces random links!
 
 # Description
