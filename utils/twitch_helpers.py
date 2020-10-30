@@ -40,13 +40,14 @@ def get_twitch_access_token():
 # Returns a dictionary of top 100 twitch games
 def get_twitch_games():
     access_token = get_twitch_access_token()
-
+    log.info('Twitch access_token: ' + access_token)
     headers = {
         'client-id': CLIENT_ID,
         'Authorization': 'Bearer ' + access_token,
     }
 
     response = requests.get('https://api.twitch.tv/helix/games/top?first=100', headers=headers)
+    log.info("Status code response for games call: " + str(response.status_code))
     games = response.json()['data']
 
     game_dict = {}
@@ -58,6 +59,7 @@ def get_twitch_games():
         weighted_game_ids.extend([game['id']] * weight)
         if weight != 1:
             weight -= 1
+            log.info('Weight ' + str(weight))
 
     return game_dict, weighted_game_ids
 
