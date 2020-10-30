@@ -11,8 +11,8 @@ log = logging.getLogger(__name__)
 
 # Load twitch client id and secret into file
 load_dotenv()
-CLIENT_ID = os.getenv('TWITCH_CLIENT_ID').rstrip()
-CLIENT_SECRET = os.getenv('TWITCH_CLIENT_SECRET').rstrip()
+CLIENT_ID = os.getenv('TWITCH_CLIENT_ID')
+CLIENT_SECRET = os.getenv('TWITCH_CLIENT_SECRET')
 
 
 class Streamer:
@@ -27,9 +27,7 @@ def get_twitch_access_token():
         'client_secret': CLIENT_SECRET,
         'grant_type': 'client_credentials'
     }
-    log.info('Headers for access token call: ' + str(headers))
     response = requests.post('https://id.twitch.tv/oauth2/token', data=headers)
-    log.info('Response code for access token request: ' + str(response.status_code))
 
     access_token = response.json()['access_token']
     if access_token == '':
@@ -121,8 +119,10 @@ def get_streamer(game_id):
         return None
 
     streamer = random.choice(streamers)
+    log.info('Got streamer: ' + str(streamer))
 
     streamer_login_name = get_streamer_login_name(streamer)
+    log.info('Getting view count for: ' + streamer)
     viewer_count = streamer['viewer_count']
 
     my_streamer = Streamer(streamer_login_name, viewer_count)
@@ -142,7 +142,7 @@ def get_streamer_login_name(streamer):
     try:
         data = response.json()['data']
         streamer_login_name = (data[0]['login'])
-        log.info('Got streamer login name')
+        log.info('Got streamer login name ' + streamer_login_name)
     except KeyError:
         log.warning('KeyError finding streamer login name')
         return None
