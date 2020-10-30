@@ -122,9 +122,7 @@ def get_streamer(game_id):
     log.info('Got streamer: ' + str(streamer))
 
     streamer_login_name = get_streamer_login_name(streamer)
-    log.info('Getting view count for: ' + str(streamer))
     viewer_count = streamer['viewer_count']
-    log.info('View count: ' + viewer_count)
 
     my_streamer = Streamer(streamer_login_name, viewer_count)
     log.info('Streamer object: ' + str(my_streamer))
