@@ -1,5 +1,7 @@
 # discord-randomizer
+[![Build Status](https://travis-ci.com/TRottinger/discord-randomizer.svg?branch=dev)](https://travis-ci.com/TRottinger/discord-randomizer)
 [![CodeFactor](https://www.codefactor.io/repository/github/trottinger/discord-randomizer/badge/dev)](https://www.codefactor.io/repository/github/trottinger/discord-randomizer/overview/dev)
+[![Discord](https://img.shields.io/discord/770772439436361768)](https://discord.gg/EbZ3QX4)
 
 Code for a discord bot that produces random links!
 
