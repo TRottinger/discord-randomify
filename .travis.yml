@@ -14,7 +14,7 @@ install:
 script:
   - python -m py_compile ./bot.py
   - pytest
-  - docker build --pull -cache-from "$IMAGE_NAME" --tag "$IMAGE_NAME" .
+  - docker build --pull --cache-from "$IMAGE_NAME" --tag "$IMAGE_NAME" .
 
 after_script:
   - docker images
