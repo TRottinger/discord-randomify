@@ -23,7 +23,6 @@ class Twitch(commands.Cog):
         log.info('Got game: ' + game_name_picked)
 
         streamer = twitch_helpers.get_streamer(game_id_picked)
-        log.info('Got streamer ' + streamer)
         author = ctx.author.mention
         if streamer is None:
             await ctx.send(author + ' I did not find any streamers')

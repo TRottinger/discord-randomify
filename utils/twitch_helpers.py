@@ -125,7 +125,6 @@ def get_streamer(game_id):
     viewer_count = streamer['viewer_count']
 
     my_streamer = Streamer(streamer_login_name, viewer_count)
-    log.info('Streamer object: ' + str(my_streamer))
     return my_streamer
 
 
