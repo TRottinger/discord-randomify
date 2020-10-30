@@ -7,6 +7,8 @@ from dotenv import load_dotenv
 import logging
 
 logging.basicConfig(filename='info.log', filemode='w', level=logging.INFO)
+FORMAT = "[%(filename)s:%(lineno)s - %(funcName)20s() ] %(message)s"
+logging.basicConfig(format=FORMAT)
 log = logging.getLogger(__name__)
 
 # Load twitch client id and secret into file

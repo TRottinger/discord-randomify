@@ -1,6 +1,11 @@
+import logging
+
 from discord.ext import commands
 from utils import twitch_helpers
 import random
+
+
+log = logging.getLogger(__name__)
 
 
 class Twitch(commands.Cog):
@@ -23,6 +28,7 @@ class Twitch(commands.Cog):
             result_string = author + ' I reached into my magic hat and found:\n'
             result_string = result_string + str(streamer.login_name) + ' playing ' + game_name_picked + ' for ' + str(
                 streamer.viewers) + ' viewers at https://www.twitch.tv/' + streamer.login_name
+            log.info('Sending out result string: ' + result_string)
             await ctx.send(result_string)
 
     @commands.command(name="twitch_game", description="Get a link to a random streamer playing a specific game",
@@ -43,6 +49,7 @@ class Twitch(commands.Cog):
             result_string = author + ' I reached into my magic hat and found:\n'
             result_string = result_string + str(streamer.login_name) + ' playing ' + game_name_picked + ' for ' + str(
                 streamer.viewers) + ' viewers at https://www.twitch.tv/' + streamer.login_name
+            log.info('Sending out result string: ' + result_string)
             await ctx.send(result_string)
 
     @twitch_game.error

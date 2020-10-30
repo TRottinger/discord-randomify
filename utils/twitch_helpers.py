@@ -3,6 +3,10 @@ import os
 from dotenv import load_dotenv
 from utils.url_builder import build_twitch_streams_url
 import random
+import logging
+
+
+log = logging.getLogger(__name__)
 
 
 # Load twitch client id and secret into file
@@ -27,6 +31,8 @@ def get_twitch_access_token():
     response = requests.post('https://id.twitch.tv/oauth2/token', data=headers)
 
     access_token = response.json()['access_token']
+    if access_token == '':
+        log.warning('Bad Twitch access token')
 
     return access_token
 
@@ -66,6 +72,7 @@ def get_game_by_name(game_name):
     response = requests.get('https://api.twitch.tv/helix/games?name=' + game_name, headers=headers)
     games = response.json()['data']
     if len(games) > 0:
+        log.info('Returning game id: ' + games[0]['id'])
         return games[0]['id']
     return ''
 
@@ -94,6 +101,7 @@ def get_twitch_streams(game_id=0, language=''):
             for data in response.json()['data']:
                 streamers.append(data)
         except KeyError:
+            log.warning('No streamers found for game: ' + str(game_id))
             return None
 
         if str(response.json()['pagination']) == '{}':
@@ -133,6 +141,8 @@ def get_streamer_login_name(streamer):
     try:
         data = response.json()['data']
         streamer_login_name = (data[0]['login'])
+        log.info('Got streamer login name')
     except KeyError:
+        log.warning('KeyError finding streamer login name')
         return None
     return streamer_login_name
