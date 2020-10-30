@@ -1,8 +1,10 @@
 # discord-randomizer
+[![CodeFactor](https://www.codefactor.io/repository/github/trottinger/discord-randomizer/badge/dev)](https://www.codefactor.io/repository/github/trottinger/discord-randomizer/overview/dev)
+
 Code for a discord bot that produces random links!
 
 # Description
-A bot designed with fun and randomness in mind. This is a great bot for when you and your friends are bored and looking to spice things up. It can produce random links to websites include, but not limited to, Wikipedia, YouTube, Twitch, and more.
+A bot designed with fun and randomness in mind. This is a great bot for when you and your friends are bored and looking to spice things up. It can produce random links to websites including, but not limited to, Wikipedia, YouTube, Twitch, and more.
 
 It utilizes the discord.py library to integrate smoothly with Discord.
 
