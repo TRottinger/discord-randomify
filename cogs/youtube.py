@@ -53,12 +53,13 @@ class YouTube(commands.Cog):
                       brief="Get a random youtube video")
     async def youtube(self, ctx):
 
-        if self.queries_this_hour < YOUTUBE_SEARCH_LIMIT_PER_HOUR:
-            self.request_new_videos()
-
+        #if self.queries_this_hour < YOUTUBE_SEARCH_LIMIT_PER_HOUR:
+        #    self.request_new_videos()
+        #
         author = ctx.author.mention
-        await ctx.send(author + ' Check this out on YouTube: https://www.youtube.com/watch?v='
-                       + random.choice(self.videos))
+        #await ctx.send(author + ' Check this out on YouTube: https://www.youtube.com/watch?v='
+        #               + random.choice(self.videos))
+        await ctx.send(author + ' Sorry, YouTube functionality is currently down until the dev figures out Databases')
 
 
 def setup(bot):
