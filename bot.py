@@ -1,6 +1,8 @@
 import os
 
+import discord
 from discord.ext import commands
+from discord import Activity, ActivityType
 from dotenv import load_dotenv
 import logging
 
@@ -33,6 +35,10 @@ class Bot(commands.AutoShardedBot):
     async def on_command_error(self, ctx, error):
         if isinstance(error, commands.CommandNotFound):
             await ctx.send(ctx.author.mention + '- Sorry, that command does not exist!')
+
+    async def on_ready(self):
+        await self.change_presence(activity=discord.Activity(type=discord.ActivityType.streaming,
+                                                             name='on the Cloud. !rt help'))
 
 
 if __name__ == '__main__':
