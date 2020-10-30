@@ -27,8 +27,9 @@ def get_twitch_access_token():
         'client_secret': CLIENT_SECRET,
         'grant_type': 'client_credentials'
     }
-
+    log.info('Headers for access token call: ' + str(headers))
     response = requests.post('https://id.twitch.tv/oauth2/token', data=headers)
+    log.info('Response code for access token request: ' + str(response.status_code))
 
     access_token = response.json()['access_token']
     if access_token == '':
@@ -40,14 +41,12 @@ def get_twitch_access_token():
 # Returns a dictionary of top 100 twitch games
 def get_twitch_games():
     access_token = get_twitch_access_token()
-    log.info('Twitch access_token: ' + access_token)
     headers = {
         'client-id': CLIENT_ID,
         'Authorization': 'Bearer ' + access_token,
     }
 
     response = requests.get('https://api.twitch.tv/helix/games/top?first=100', headers=headers)
-    log.info("Status code response for games call: " + str(response.status_code))
     games = response.json()['data']
 
     game_dict = {}
