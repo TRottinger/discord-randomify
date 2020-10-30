@@ -15,12 +15,15 @@ class Twitch(commands.Cog):
     @commands.command(name="twitch", description="Get a link to a random streamer", aliases=["stream", "streamer"],
                       brief="Get a random twitch streamer")
     async def twitch(self, ctx):
+        log.info('Got twitch call')
         games, weighted_id_game_selector = twitch_helpers.get_twitch_games()
-
+        log.info('Got weighted_id_game_selector_size ' + str(len(weighted_id_game_selector)))
         game_id_picked = random.choice(weighted_id_game_selector)
         game_name_picked = str(games.get(game_id_picked))
+        log.info('Got game: ' + game_name_picked)
 
         streamer = twitch_helpers.get_streamer(game_id_picked)
+        log.info('Got streamer ' + streamer)
         author = ctx.author.mention
         if streamer is None:
             await ctx.send(author + ' I did not find any streamers')
