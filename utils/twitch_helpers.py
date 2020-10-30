@@ -11,8 +11,8 @@ log = logging.getLogger(__name__)
 
 # Load twitch client id and secret into file
 load_dotenv()
-CLIENT_ID = os.getenv('TWITCH_CLIENT_ID')
-CLIENT_SECRET = os.getenv('TWITCH_CLIENT_SECRET')
+CLIENT_ID = os.getenv('TWITCH_CLIENT_ID').rstrip()
+CLIENT_SECRET = os.getenv('TWITCH_CLIENT_SECRET').rstrip()
 
 
 class Streamer:
