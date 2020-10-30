@@ -15,4 +15,4 @@ COPY utils/ utils/
 COPY cogs/ cogs/
 COPY bot.py .
 # command to run on container start
-CMD [ "python", "/code/bot.py" ]
+CMD [ "python", "bot.py" ]
