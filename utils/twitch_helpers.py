@@ -140,11 +140,6 @@ def get_streamer_login_name(streamer):
         'Authorization': 'Bearer ' + access_token,
     }
     response = requests.get('https://api.twitch.tv/helix/users?id=' + streamer['user_id'], headers=headers)
-    try:
-        data = response.json()['data']
-        streamer_login_name = (data[0]['login'])
-        log.info('Got streamer login name ' + streamer_login_name)
-    except KeyError:
-        log.warning('KeyError finding streamer login name')
-        return None
+    data = response.json()['data']
+    streamer_login_name = (data[0]['login'])
     return streamer_login_name
