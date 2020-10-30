@@ -37,4 +37,3 @@ class Bot(commands.AutoShardedBot):
 
 if __name__ == '__main__':
     bot = Bot('!rt ')
-

@@ -67,8 +67,7 @@ def get_game_by_name(game_name):
     games = response.json()['data']
     if len(games) > 0:
         return games[0]['id']
-    else:
-        return ''
+    return ''
 
 
 # Returns a list of streamers

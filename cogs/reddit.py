@@ -13,8 +13,8 @@ class Reddit(commands.Cog):
         try:
             urlopen = urllib.request.Request('https://www.reddit.com/r/random')
             urlopen.add_header('User-Agent', 'discord-bot/0.0.1')
-            response = urllib.request.urlopen(urlopen)
-            result = str(response.url)
+            with urllib.request.urlopen(urlopen) as response:
+                result = str(response.url)
         except urllib.error.HTTPError:
             result = 'I\'m being rate limited, so manually click this: https://www.reddit.com/r/random'
         author = ctx.author.mention

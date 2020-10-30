@@ -19,7 +19,6 @@ class Twitch(commands.Cog):
         author = ctx.author.mention
         if streamer is None:
             await ctx.send(author + ' I did not find any streamers')
-            return
         else:
             result_string = author + ' I reached into my magic hat and found:\n'
             result_string = result_string + str(streamer.login_name) + ' playing ' + game_name_picked + ' for ' + str(
@@ -40,7 +39,6 @@ class Twitch(commands.Cog):
         streamer = twitch_helpers.get_streamer(game_id_picked)
         if streamer is None:
             await ctx.send(author + ' I did not find any streamers under the game ' + game_name_picked)
-            return
         else:
             result_string = author + ' I reached into my magic hat and found:\n'
             result_string = result_string + str(streamer.login_name) + ' playing ' + game_name_picked + ' for ' + str(
