@@ -7,8 +7,8 @@ class Wiki(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="wiki", description="Get a link to a random wiki article", aliases=["wikipedia"])
-    @commands.guild_only()
+    @commands.command(name="wiki", description="Get a link to a random wiki article", aliases=["wikipedia"],
+                      brief="Get a random wiki article")
     async def wiki(self, ctx):
         page = wikipedia.random(1)
         try:
