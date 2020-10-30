@@ -35,6 +35,5 @@ class CommonRandomizer(commands.Cog):
         await ctx.send(author + ' ' + str(result) + '')
 
 
-
 def setup(bot):
     bot.add_cog(CommonRandomizer(bot))
