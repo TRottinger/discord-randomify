@@ -41,8 +41,8 @@ class Bot(commands.AutoShardedBot):
 
     async def on_ready(self):
         await self.change_presence(activity=discord.Activity(type=discord.ActivityType.playing,
-                                                             name='on the Cloud. !rt help'))
+                                                             name='on the Cloud. ~help'))
 
 
 if __name__ == '__main__':
-    bot = Bot('!rt ')
+    bot = Bot('~')
