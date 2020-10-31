@@ -76,10 +76,9 @@ class YouTube(commands.Cog):
             self.request_new_videos()
 
         author = ctx.author.mention
-        print(self.videos)
+        video = random.choice(self.videos)
         await ctx.send(author + ' Check this out on YouTube: '
-                       + random.choice(self.videos))
-        await ctx.send(author + ' Sorry, YouTube functionality is currently down. Enjoy this one video')
+                       + str(video['Link']))
 
 
 def setup(bot):
