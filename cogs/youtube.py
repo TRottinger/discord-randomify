@@ -40,7 +40,8 @@ class YouTube(commands.Cog):
         if status_code == 'OK':
             try:
                 for item in response.json()['items']:
-                    new_link = {'Link': 'https://www.youtube.com/watch?v=' + item['id']['videoId']}
+                    new_link = {'Link': 'https://www.youtube.com/watch?v=' + item['id']['videoId'],
+                                'Query': random_query_word}
                     self.videos.append(new_link)
                     self.db_links_table.insert_one(new_link)
             except KeyError:
