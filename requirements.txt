@@ -6,3 +6,5 @@ pre-commit==2.8.1
 wikipedia~=1.4.0
 urllib3~=1.25.11
 pytest==6.1.2
+dnspython~=2.0.0
+pymongo[tls,srv]~=3.11.0
