@@ -13,7 +13,7 @@ discord-randomizer runs through the cloud using Docker, Kubernetes, and Google C
 It utilizes the discord.py library to integrate smoothly with Discord.
 
 # Usage
-The current bot prefix is !rt. You can use !rt help to get started. Here is the list of commands:
+The current bot prefix is !rt. You can use !rt help to get started. Some of the popular commands:
 
   !rt coinflip              
   
@@ -21,23 +21,11 @@ The current bot prefix is !rt. You can use !rt help to get started. Here is the 
   
   !rt roll                  
   
-  !rt aram_reroll           
+  !rt subreddit
   
-  !rt champ_select          
+  !rt twitch
   
-  !rt champ_select_aram     
-  
-  !rt champion              
-  
-  !rt summoner_spell        
-  
-  !rt summoner_spell_aram   
-  
-  !rt subreddit             
-
-  !rt game_stream <game>    
-  
-  !rt streamer              
+  !rt twitch_game YourGameHere
 
   !rt wiki                  
 
