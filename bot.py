@@ -26,11 +26,11 @@ class Bot(commands.AutoShardedBot):
     def __init__(self, command_prefix, **options):
         super().__init__(command_prefix, **options)
         self.db_client = pymongo.MongoClient(MONGO_DB_URL)
-        #self.load_extension('cogs.twitch')
-        #self.load_extension('cogs.reddit')
-        #self.load_extension('cogs.wiki')
-        #self.load_extension('cogs.common_randomizers')
-        #self.load_extension('cogs.league_of_legends')
+        self.load_extension('cogs.twitch')
+        self.load_extension('cogs.reddit')
+        self.load_extension('cogs.wiki')
+        self.load_extension('cogs.common_randomizers')
+        self.load_extension('cogs.league_of_legends')
         self.load_extension('cogs.youtube')
         super().run(TOKEN, reconnect=True)
 
