@@ -19,6 +19,12 @@ class Config(commands.Cog):
         else:
             await ctx.send('Invalid prefix. Sorry :(')
 
+    @prefix.error
+    async def prefix_error(self, ctx, error):
+        author = ctx.author.mention
+        if isinstance(error, commands.MissingRequiredArgument):
+            await ctx.send(author + ' - Please provide an argument')
+
     @commands.command(name='get_prefix', description='Get the prefix for this guild',
                       brief='Get prefix for invocation', aliases=['prefix_get'])
     @commands.guild_only()
