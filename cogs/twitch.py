@@ -4,8 +4,14 @@ from discord.ext import commands
 from utils import twitch_helpers
 import random
 
-
 log = logging.getLogger(__name__)
+
+
+def prepare_output_string(author, streamer_name, game_name, viewer_count):
+    output_string = author + ' I reached into my magic hat and found:\n'
+    output_string = output_string + str(streamer_name) + ' playing ' + game_name + ' for ' + str(
+        viewer_count) + ' viewers at https://www.twitch.tv/' + streamer_name
+    return str(output_string)
 
 
 class Twitch(commands.Cog):
@@ -27,9 +33,8 @@ class Twitch(commands.Cog):
         if streamer is None:
             await ctx.send(author + ' I did not find any streamers')
         else:
-            result_string = author + ' I reached into my magic hat and found:\n'
-            result_string = result_string + str(streamer.login_name) + ' playing ' + game_name_picked + ' for ' + str(
-                streamer.viewers) + ' viewers at https://www.twitch.tv/' + streamer.login_name
+            result_string = prepare_output_string(author, str(streamer.login_name),
+                                                  game_name_picked, streamer.viewers)
             log.info('Sending out result string: ' + result_string)
             await ctx.send(result_string)
 
@@ -48,9 +53,8 @@ class Twitch(commands.Cog):
         if streamer is None:
             await ctx.send(author + ' I did not find any streamers under the game ' + game_name_picked)
         else:
-            result_string = author + ' I reached into my magic hat and found:\n'
-            result_string = result_string + str(streamer.login_name) + ' playing ' + game_name_picked + ' for ' + str(
-                streamer.viewers) + ' viewers at https://www.twitch.tv/' + streamer.login_name
+            result_string = prepare_output_string(author, str(streamer.login_name),
+                                                  game_name_picked, streamer.viewers)
             log.info('Sending out result string: ' + result_string)
             await ctx.send(result_string)
 

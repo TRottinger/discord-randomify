@@ -2,7 +2,6 @@ import os
 import random
 import logging
 
-import requests
 from discord.ext import commands, tasks
 from dotenv import load_dotenv
 
@@ -27,7 +26,7 @@ class YouTube(commands.Cog):
         self.db_youtube = self.bot.db_client.get_database('YouTube')
         self.db_links_table = self.db_youtube.YoutubeLinks
 
-    def request_new_videos(self):
+    async def request_new_videos(self):
         random_query_word = get_random_query()
         print(random_query_word)
         headers = {
@@ -67,14 +66,14 @@ class YouTube(commands.Cog):
     async def before_reset_count(self):
         log.info("Preparing to reset count")
         while self.queries_this_hour < YOUTUBE_SEARCH_LIMIT_PER_HOUR:
-            self.request_new_videos()
+            await self.request_new_videos()
         await self.bot.wait_until_ready()
 
     @commands.command(name="youtube", description="Get a link to a random youtube video", aliases=["ytube", "yt"],
                       brief="Get a random youtube video")
     async def youtube(self, ctx):
         if self.queries_this_hour < YOUTUBE_SEARCH_LIMIT_PER_HOUR:
-            self.request_new_videos()
+            await self.request_new_videos()
 
         author = ctx.author.mention
         video = random.choice(self.videos)
