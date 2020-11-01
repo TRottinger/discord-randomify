@@ -31,6 +31,20 @@ class Config(commands.Cog):
             await ctx.send(author + ' available prefixes are: \"' + self.bot.default_prefix + '\" and \"'
                            + prefix + '\"')
 
+    @commands.command(name='github', description='Get the code for the me!',
+                      brief='Get my code')
+    async def github(self, ctx):
+        github = 'https://github.com/TRottinger/discord-randomizer'
+        author = ctx.author.mention
+        await ctx.send(author + ' check out my code on GitHub: ' + github)
+
+    @commands.command(name='discord', description='Invite link to the bot discord',
+                      brief='Bot discord', aliases=['git'])
+    async def discord(self, ctx):
+        discord = 'https://discord.gg/EbZ3QX4'
+        author = ctx.author.mention
+        await ctx.send(author + ' join our Discord server: ' + discord)
+
 
 def setup(bot):
     bot.add_cog(Config(bot))
