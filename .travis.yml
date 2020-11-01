@@ -5,7 +5,7 @@ services:
   docker
 env:
   global:
-    - IMAGE_NAME=$DOCKER_USERNAME/discord-randomizer
+    - IMAGE_NAME=$DOCKER_REPO/discord-randomizer
 # command to install dependencies
 install:
   - pip install -r requirements.txt
