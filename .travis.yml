@@ -10,7 +10,7 @@ services:
   docker
 env:
   global:
-    - IMAGE_NAME="$DOCKER_REPO/discord-randomizer"
+    - IMAGE_NAME="trottinger/discord-randomizer"
 
 before_install:
   - bash scripts/set_password.sh
