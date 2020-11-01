@@ -1,2 +1,2 @@
 #!/bin/bash
-docker push trottinger/discord-randomizer
+docker push $IMAGE_NAME

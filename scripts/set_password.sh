@@ -7,5 +7,5 @@ echo '{ "features": { "buildkit": true }, "experimental": true }' | sudo tee /et
 sudo service docker restart
 
 if [[ "$TRAVIS_PULL_REQUEST" == "false" ]]; then
-    echo $TRAVIS_DOCKER_PASSWORD | docker login --username="$TRAVIS_DOCKER_USERNAME" --password-stdin
+    echo $DOCKER_PASSWORD | docker login --username="$DOCKER_USERNAME" --password-stdin
 fi
