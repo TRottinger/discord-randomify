@@ -1,6 +1,11 @@
 language: python
 python:
   - "3.8"
+addons:
+  apt:
+    packages:
+    - docker-ce
+    - pass
 services:
   docker
 env:
@@ -18,6 +23,9 @@ script:
 
 after_script:
   - docker images
+
+before_deploy:
+  - bash scripts/set_password.sh
 
 deploy:
   provider: script
