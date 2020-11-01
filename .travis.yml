@@ -5,7 +5,7 @@ services:
   docker
 env:
   global:
-    - IMAGE_NAME=echolyn/discord-randomizer
+    - IMAGE_NAME=$DOCKER_USERNAME/discord-randomizer
 # command to install dependencies
 install:
   - pip install -r requirements.txt
@@ -14,7 +14,13 @@ install:
 script:
   - python -m py_compile ./bot.py
   - pytest -s -v
-  - docker build --pull --cache-from "$IMAGE_NAME" --tag "$IMAGE_NAME" .
+  - docker build -t "$IMAGE_NAME:$TRAVIS_COMMIT" .
 
 after_script:
   - docker images
+
+deploy:
+  provider: script
+  script: bash scipts/docker_push.sh
+  on:
+    branch: dev
