@@ -13,7 +13,7 @@ install:
 # command to run tests
 script:
   - python -m py_compile ./bot.py
-  - pytest
+  - pytest -s -v
   - docker build --pull --cache-from "$IMAGE_NAME" --tag "$IMAGE_NAME" .
 
 after_script:
