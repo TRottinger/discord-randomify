@@ -21,6 +21,6 @@ after_script:
 
 deploy:
   provider: script
-  script: bash scipts/docker_push.sh
+  script: bash scRipts/docker_push.sh
   on:
     branch: dev
