@@ -10,7 +10,7 @@ services:
   docker
 env:
   global:
-    - IMAGE_NAME="trottinger/discord-randomizer"
+    - IMAGE_NAME="$DOCKER_REPO/discord-randomizer"
 
 before_install:
   - bash scripts/set_password.sh
@@ -22,7 +22,7 @@ install:
 script:
   - python -m py_compile ./bot.py
   - pytest -s -v
-  - docker build -t "$IMAGE_NAME:$TRAVIS_COMMIT" .
+  - docker build -t "$IMAGE_NAME:dev" -t "$IMAGE_NAME:$TRAVIS_COMMIT" .
 
 after_script:
   - docker images
