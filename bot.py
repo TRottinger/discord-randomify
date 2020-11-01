@@ -23,10 +23,24 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 MONGO_DB_URL = os.getenv('MONGO_DB')
 
 
+def _guild_prefix(discord_bot, discord_msg):
+    guild = discord_msg.guild
+    if guild is None:
+        return discord_bot.default_prefix
+    else:
+        # Return both default and custom defined prefix. Makes sure default always works
+        custom_prefix = discord_bot.get_guild_prefix(guild.id)
+        return [discord_bot.default_prefix, custom_prefix]
+
+
 class Bot(commands.AutoShardedBot):
-    def __init__(self, command_prefix, **options):
-        super().__init__(command_prefix, **options)
+    def __init__(self, **options):
+        super().__init__(command_prefix=_guild_prefix, **options)
         self.db_client = pymongo.MongoClient(MONGO_DB_URL)
+        self.db_bot = self.db_client.get_database('Bot')
+        self.db_prefix_table = self.db_bot.get_collection('GuildPrefixes')
+        self.default_prefix = '!rt '
+        self.load_extension('cogs.config')
         self.load_extension('cogs.twitch')
         self.load_extension('cogs.reddit')
         self.load_extension('cogs.wiki')
@@ -41,8 +55,35 @@ class Bot(commands.AutoShardedBot):
 
     async def on_ready(self):
         await self.change_presence(activity=discord.Activity(type=discord.ActivityType.playing,
-                                                             name='on the Cloud. ~help'))
+                                                             name='on the Cloud. !rt help'))
+
+    async def set_guild_prefix(self, guild, prefix):
+        res = ''
+        if prefix == '':
+            res = 'Empty prefix'
+        elif prefix.isspace():
+            res = 'Badly formed prefix'
+        else:
+            entry = {
+                'Guild': guild,
+                'Prefix': prefix
+            }
+            self.db_prefix_table.find_one_and_update({'Guild': guild}, {"$set": entry}, upsert=True)
+            res = ''
+        return res
+
+    def get_guild_prefix(self, guild):
+        entry = self.db_prefix_table.find_one({'Guild': guild})
+
+        if entry is None:
+            prefix = self.default_prefix
+        else:
+            prefix = str(entry['Prefix'])
+        return prefix
+
+    async def get_guilds(self):
+        return self.guilds
 
 
 if __name__ == '__main__':
-    bot = Bot('~')
+    bot = Bot()
