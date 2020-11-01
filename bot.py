@@ -16,9 +16,6 @@ log = logging.getLogger(__name__)
 
 # Load twitch client id and secret into file
 load_dotenv()
-CLIENT_ID = os.getenv('TWITCH_CLIENT_ID')
-CLIENT_SECRET = os.getenv('TWITCH_CLIENT_SECRET')
-YOUTUBE_API_KEY = os.getenv('YOUTUBE_API_KEY')
 TOKEN = os.getenv('DISCORD_TOKEN')
 MONGO_DB_URL = os.getenv('MONGO_DB')
 
