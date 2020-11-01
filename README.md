@@ -12,6 +12,9 @@ discord-randomizer runs through the cloud using Docker, Kubernetes, and Google C
 
 It utilizes the discord.py library to integrate smoothly with Discord.
 
+# Invite
+To invite the bot to your server, use: https://bit.ly/2JqfTQN
+
 # Usage
 The current bot prefix is !rt. You can use !rt help to get started. Some of the popular commands:
 
