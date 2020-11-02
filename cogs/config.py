@@ -51,6 +51,11 @@ class Config(commands.Cog):
         author = ctx.author.mention
         await ctx.send(author + ' join our Discord server: ' + discord)
 
+    @commands.command(name='invite', description='Invite link to have bot join your Discord',
+                      brief='Invite link for bot')
+    async def invite(self, ctx):
+        await ctx.send('To invite the bot to your server, use: https://bit.ly/2JqfTQN')
+
 
 def setup(bot):
     bot.add_cog(Config(bot))
