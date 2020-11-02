@@ -8,7 +8,7 @@ Code for a discord bot that produces random links!
 # Description
 A bot designed with fun and randomness in mind. This is a great bot for when you and your friends are bored and looking to spice things up. It can produce random links to websites including, but not limited to, Wikipedia, YouTube, Twitch, and more.
 
-discord-randomizer runs through the cloud using Docker, Kubernetes, and Google Cloud.
+discord-randomizer runs on the cloud using Docker and Google Cloud.
 
 It utilizes the discord.py library to integrate smoothly with Discord.
 
