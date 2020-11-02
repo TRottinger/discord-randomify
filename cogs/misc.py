@@ -9,8 +9,7 @@ class MiscFunctions(commands.Cog):
                       brief='Repeat your command')
     async def repeat(self, ctx):
         author = str(ctx.author)
-
-        last_ctx = self.bot.repeat_dict[author]
+        last_ctx = self.bot.repeat_dict.get(author)
         if last_ctx is not None:
             await last_ctx.reinvoke()
         else:
