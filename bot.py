@@ -36,8 +36,11 @@ class Bot(commands.AutoShardedBot):
         self.db_client = pymongo.MongoClient(MONGO_DB_URL)
         self.db_bot = self.db_client.get_database('Bot')
         self.db_prefix_table = self.db_bot.get_collection('GuildPrefixes')
+        # map ctx to user to be able to repeat command
         self.default_prefix = '!rt '
+        self.repeat_dict = {}
         self.load_extension('cogs.config')
+        self.load_extension('cogs.misc')
         self.load_extension('cogs.twitch')
         self.load_extension('cogs.reddit')
         self.load_extension('cogs.wiki')
@@ -53,6 +56,12 @@ class Bot(commands.AutoShardedBot):
     async def on_ready(self):
         await self.change_presence(activity=discord.Activity(type=discord.ActivityType.playing,
                                                              name='on the Cloud. !rt help'))
+
+    async def on_command_completion(self, ctx):
+        # add to repeat dict if not 'repeat' called
+        str_command = str(ctx.command)
+        if str_command != 'repeat':
+            self.repeat_dict[str(ctx.message.author)] = ctx
 
     async def set_guild_prefix(self, guild, prefix):
         res = ''
