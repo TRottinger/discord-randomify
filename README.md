@@ -18,23 +18,17 @@ To invite the bot to your server, use: https://bit.ly/2JqfTQN
 # Usage
 The current bot prefix is !rt. You can use !rt help to get started. Some of the popular commands:
 
-  !rt coinflip              
-  
-  !rt diceroll              
-  
-  !rt roll                  
+  !rt coinflip                          
   
   !rt subreddit
   
   !rt twitch
   
-  !rt twitch_game YourGameHere
-
   !rt wiki                  
 
   !rt youtube               
 
-  !rt help                  
+Please visit https://trottinger.github.io/discord-randomify/ for a full command listing.
   
 # Support
 For support, feel free to open an issue or for more direct support, contact me on Discord at Echolyn#6969
