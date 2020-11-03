@@ -18,6 +18,18 @@ def build_url(url, *argv):
     return url
 
 
+def build_url_kwargs(url, **kwargs):
+    if len(kwargs) == 0:
+        return url
+    url += '?'
+    for key, val in kwargs.items():
+            url += key + '=' + val
+            url += '&'
+    url = url[:-1]
+
+    return url
+
+
 def build_twitch_streams_url(url, first, game_id, after):
     return_url = ''
     if game_id != '0':

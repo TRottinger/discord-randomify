@@ -30,14 +30,14 @@ class LeagueOfLegends(commands.Cog):
         author = ctx.author.mention
         await ctx.send(author + ' You got ' + champion + '!')
 
-    @commands.command(name="summoner_spell", description="Get a random League of Legends summoner spell",
+    @commands.command(name="summonerspell", description="Get a random League of Legends summoner spell",
                       brief="Get a random League summoner spell")
     async def summoner_spell(self, ctx):
         ss = random.choice(SUMMONER_SPELLS)
         author = ctx.author.mention
         await ctx.send(author + ' You got ' + ss + '!')
 
-    @commands.command(name="champ_select", description="Get a random champion and 2 summoner spells",
+    @commands.command(name="champselect", description="Get a random champion and 2 summoner spells",
                       brief="Get a random champ + 2 summoners")
     async def champ_select(self, ctx):
         champion = random.choice(CHAMPS)
@@ -45,21 +45,21 @@ class LeagueOfLegends(commands.Cog):
         author = ctx.author.mention
         await ctx.send(author + ' You got ' + champion + ' with ' + ss[0] + ' and ' + ss[1] + '!')
 
-    @commands.command(name="summoner_spell_aram", description="Get a random League of Legends ARAM summoner spell",
+    @commands.command(name="summonerspellaram", description="Get a random League of Legends ARAM summoner spell",
                       brief="Get a random League ARAM summoner spell")
     async def summoner_spell_aram(self, ctx):
         ss = random.choice(SUMMONER_SPELLS_ARAM)
         author = ctx.author.mention
         await ctx.send(author + ' You got ' + ss + '!')
 
-    @commands.command(name="champ_select_aram", description="Get 2 summoner spells for ARAM",
+    @commands.command(name="champselectaram", description="Get 2 summoner spells for ARAM",
                       brief="Get 2 ARAM summoners")
     async def champ_select_aram(self, ctx):
         ss = random.sample(SUMMONER_SPELLS_ARAM, k=2)
         author = ctx.author.mention
         await ctx.send(author + ' You got ' + ss[0] + ' and ' + ss[1] + '!')
 
-    @commands.command(name="aram_reroll", description="Get Y/N value on whether you should reroll",
+    @commands.command(name="aramreroll", description="Get Y/N value on whether you should reroll",
                       brief="Get reroll Y/N")
     async def aram_reroll(self, ctx):
         choice = random.choice(['Yes', 'No'])

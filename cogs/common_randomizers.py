@@ -31,8 +31,38 @@ class CommonRandomizer(commands.Cog):
         author = ctx.author.mention
         if arg > 1000001:
             await ctx.send(author + ' really? Why do you need to roll that high? Just don\'t')
-        result = random.randint(1, arg)
-        await ctx.send(author + ' ' + str(result) + '')
+        else:
+            result = random.randint(1, arg)
+            await ctx.send(author + ' ' + str(result) + '')
+
+    @commands.command(name="dndroll", description="Roll a dnd dice. Format XdY where X and Y are numbers",
+                      brief="Roll a dnd dice. Format [1-9]d[1-20]", usage="[1-9]d[1-20]")
+    async def dndroll(self, ctx, *, arg='1d20'):
+        ints = arg.split('d')
+        author = ctx.author.mention
+        if len(ints) != 2:
+            await ctx.send(author + ' invalid arguments. Try again! Example: 1d6')
+        times = ints[0]
+        dice = ints[1]
+        if not times.isdigit() or not dice.isdigit():
+            await ctx.send(author + ' invalid arguments. Try again! Example: 1d6')
+        times = int(times)
+        dice = int(dice)
+        if times > 9 or dice > 20:
+            await ctx.send(author + ' numbers too high!')
+        else:
+            result = times * random.randint(1, dice)
+            await ctx.send(author + ' your ' + str(times) + 'd' + str(dice) + ' roll returned ' + str(result) + '')
+
+    @commands.command(name="choose", description="Choose between a list of things",
+                      brief="Choose one from list. Space separated input")
+    async def choose(self, ctx, *args):
+        author = ctx.author.mention
+        if len(args) < 2:
+            await ctx.send(author + ' please provide enough arguments')
+        else:
+            result = random.choice(args)
+            await ctx.send(author + ' ' + str(result) + '')
 
 
 def setup(bot):
