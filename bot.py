@@ -47,6 +47,8 @@ class Bot(commands.AutoShardedBot):
         self.load_extension('cogs.common_randomizers')
         self.load_extension('cogs.league_of_legends')
         self.load_extension('cogs.youtube')
+        # self.load_extension('cogs.anime')
+        # self.load_extension('cogs.admin')
         super().run(TOKEN, reconnect=True)
 
     async def on_command_error(self, ctx, error):
