@@ -1,4 +1,5 @@
 import random
+import time
 
 from discord.ext import commands
 
@@ -6,6 +7,9 @@ from discord.ext import commands
 class CommonRandomizer(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+
+    async def percent_roll(self, percent):
+        return random.randrange(100) < percent
 
     @commands.command(name="coinflip", description="Flip a coin", aliases=['coin', 'cflip'],
                       brief="Always heads")
@@ -63,6 +67,46 @@ class CommonRandomizer(commands.Cog):
         else:
             result = random.choice(args)
             await ctx.send(author + ' ' + str(result) + '')
+
+    @commands.command(name="russianroulette", description="Like choose but with a gun",
+                      brief="Classic Russian roulette")
+    async def russianroulette(self, ctx, *args):
+        author = ctx.author.mention
+        bullets = 1
+        chamber = 6
+        emojis = self.bot.emojis
+        monkas = None
+        for emoji in emojis:
+            if emoji.name == 'monkaS':
+                monkas = str(emoji)
+                break
+        if monkas is None:
+            monkas = ':person_bald:'
+
+        if len(args) < 2:
+            await ctx.send(author + ' please provide enough arguments')
+        else:
+            random.shuffle(list(args))
+            rotate = len(args) - 1
+            index = 0
+            while bullets == 1:
+                await ctx.send('Alright, ' + args[index] + ', you\'re up. ' + str(chamber) + ' shots left.....')
+                time.sleep(1)
+                await ctx.send(monkas + ' :gun:')
+                time.sleep(1)
+                result = await self.percent_roll((bullets/chamber)*100)
+                if result:
+                    await ctx.send(':boom: :skull: :gun:')
+                    await ctx.send('Sorry ' + args[index] + ', you died!')
+                    break
+                else:
+                    await ctx.send(args[index] + ' you lived!')
+                    chamber -= 1
+                    if index == rotate:
+                        index = 0
+                    else:
+                        index += 1
+                    time.sleep(2)
 
 
 def setup(bot):
