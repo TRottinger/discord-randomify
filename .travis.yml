@@ -24,7 +24,7 @@ install:
 script:
   - python -m py_compile ./bot.py
   - pytest -s -v
-  - docker build -t "$IMAGE_NAME:dev" -t "$IMAGE_NAME:$COMMIT" .
+  - docker build -t "$IMAGE_NAME:latest" -t "$IMAGE_NAME:$COMMIT" .
   - trivy --exit-code 0 --severity CRITICAL --no-progress $IMAGE_NAME:$COMMIT
 
 deploy:
