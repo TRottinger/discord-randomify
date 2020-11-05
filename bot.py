@@ -17,10 +17,12 @@ log = logging.getLogger(__name__)
 # Load twitch client id and secret into file
 load_dotenv()
 TESTING = os.getenv('testing')
+
 if TESTING == 'True':
     TOKEN = os.getenv('TEST_DISCORD_TOKEN')
 else:
     TOKEN = os.getenv('DISCORD_TOKEN')
+
 MONGO_DB_URL = os.getenv('MONGO_DB')
 
 OWNER_ID = 179780915558481929
@@ -37,6 +39,19 @@ def _guild_prefix(discord_bot, discord_msg):
         return [discord_bot.default_prefix, custom_prefix]
 
 
+def setup_extensions(discord_bot):
+    discord_bot.load_extension('cogs.config')
+    discord_bot.load_extension('cogs.misc')
+    discord_bot.load_extension('cogs.twitch')
+    discord_bot.load_extension('cogs.reddit')
+    discord_bot.load_extension('cogs.wiki')
+    discord_bot.load_extension('cogs.common_randomizers')
+    discord_bot.load_extension('cogs.league_of_legends')
+    discord_bot.load_extension('cogs.youtube')
+    # self.load_extension('cogs.anime')
+    discord_bot.load_extension('cogs.admin')
+
+
 class Bot(commands.AutoShardedBot):
     def __init__(self, **options):
         super().__init__(command_prefix=_guild_prefix, **options)
@@ -45,19 +60,8 @@ class Bot(commands.AutoShardedBot):
         self.db_prefix_table = self.db_bot.get_collection('GuildPrefixes')
         self.default_prefix = '!rt '
         self.repeat_dict = {}
-        self.load_extension('cogs.config')
-        self.load_extension('cogs.misc')
-        self.load_extension('cogs.twitch')
-        self.load_extension('cogs.reddit')
-        self.load_extension('cogs.wiki')
-        self.load_extension('cogs.common_randomizers')
-        self.load_extension('cogs.league_of_legends')
-        self.load_extension('cogs.youtube')
-        # self.load_extension('cogs.anime')
-        self.load_extension('cogs.admin')
         self.owner_id = OWNER_ID
         self.support_id = SHARED_SERVER
-        super().run(TOKEN, reconnect=True)
 
     async def on_command_error(self, ctx, error):
         if isinstance(error, commands.CommandNotFound):
@@ -111,3 +115,5 @@ class Bot(commands.AutoShardedBot):
 
 if __name__ == '__main__':
     bot = Bot(intents=discord.Intents.default())
+    setup_extensions(bot)
+    bot.run(TOKEN, reconnect=True)
