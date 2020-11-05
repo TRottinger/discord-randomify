@@ -46,7 +46,7 @@ def setup_extensions(discord_bot):
     discord_bot.load_extension('cogs.reddit')
     discord_bot.load_extension('cogs.wiki')
     discord_bot.load_extension('cogs.common_randomizers')
-    discord_bot.load_extension('cogs.league_of_legends')
+    discord_bot.load_extension('cogs.games')
     discord_bot.load_extension('cogs.youtube')
     # discord_bot.load_extension('cogs.anime')
     discord_bot.load_extension('cogs.admin')
