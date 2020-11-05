@@ -26,7 +26,7 @@ def get_twitch_access_token(client_id, client_secret, url='https://id.twitch.tv/
 
     access_token = response.json()['access_token']
     if access_token == '':
-        log.warning('Bad Twitch access token')
+        log.warning('Bad access token')
 
     return access_token
 
