@@ -48,7 +48,7 @@ def setup_extensions(discord_bot):
     discord_bot.load_extension('cogs.common_randomizers')
     discord_bot.load_extension('cogs.league_of_legends')
     discord_bot.load_extension('cogs.youtube')
-    # self.load_extension('cogs.anime')
+    # discord_bot.load_extension('cogs.anime')
     discord_bot.load_extension('cogs.admin')
 
 
@@ -62,6 +62,7 @@ class Bot(commands.AutoShardedBot):
         self.repeat_dict = {}
         self.owner_id = OWNER_ID
         self.support_id = SHARED_SERVER
+        self.help_command = discord.ext.commands.DefaultHelpCommand(dm_help=True)
 
     async def on_command_error(self, ctx, error):
         if isinstance(error, commands.CommandNotFound):
