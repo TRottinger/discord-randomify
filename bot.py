@@ -16,8 +16,15 @@ log = logging.getLogger(__name__)
 
 # Load twitch client id and secret into file
 load_dotenv()
-TOKEN = os.getenv('DISCORD_TOKEN')
+TESTING = os.getenv('testing')
+if TESTING == 'True':
+    TOKEN = os.getenv('TEST_DISCORD_TOKEN')
+else:
+    TOKEN = os.getenv('DISCORD_TOKEN')
 MONGO_DB_URL = os.getenv('MONGO_DB')
+
+OWNER_ID = 179780915558481929
+SHARED_SERVER = 773783340763316224
 
 
 def _guild_prefix(discord_bot, discord_msg):
@@ -36,7 +43,6 @@ class Bot(commands.AutoShardedBot):
         self.db_client = pymongo.MongoClient(MONGO_DB_URL)
         self.db_bot = self.db_client.get_database('Bot')
         self.db_prefix_table = self.db_bot.get_collection('GuildPrefixes')
-        # map ctx to user to be able to repeat command
         self.default_prefix = '!rt '
         self.repeat_dict = {}
         self.load_extension('cogs.config')
@@ -49,6 +55,8 @@ class Bot(commands.AutoShardedBot):
         self.load_extension('cogs.youtube')
         # self.load_extension('cogs.anime')
         self.load_extension('cogs.admin')
+        self.owner_id = OWNER_ID
+        self.support_id = SHARED_SERVER
         super().run(TOKEN, reconnect=True)
 
     async def on_command_error(self, ctx, error):
@@ -58,6 +66,14 @@ class Bot(commands.AutoShardedBot):
     async def on_ready(self):
         await self.change_presence(activity=discord.Activity(type=discord.ActivityType.playing,
                                                              name='on the Cloud. !rt help'))
+
+    async def on_guild_join(self, guild):
+        channel = self.get_guild(self.support_id).text_channels[0]
+        await channel.send('GUILD ADDED ALERT: ' + str(guild) + '. Large guild?: ' + str(guild.large))
+
+    async def on_guild_remove(self, guild):
+        channel = self.get_guild(self.support_id).text_channels[0]
+        await channel.send('GUILD REMOVED ALERT: ' + str(guild) + '. Large guild?: ' + str(guild.large))
 
     async def on_command_completion(self, ctx):
         # add to repeat dict if not 'repeat' called
@@ -94,4 +110,4 @@ class Bot(commands.AutoShardedBot):
 
 
 if __name__ == '__main__':
-    bot = Bot()
+    bot = Bot(intents=discord.Intents.default())
