@@ -40,7 +40,7 @@ class Config(commands.Cog):
     @commands.command(name='github', description='Get the code for the me!',
                       brief='Get my code')
     async def github(self, ctx):
-        github = 'https://github.com/TRottinger/discord-randomizer'
+        github = 'https://github.com/TRottinger/discord-randomify'
         author = ctx.author.mention
         await ctx.send(author + ' check out my code on GitHub: ' + github)
 
