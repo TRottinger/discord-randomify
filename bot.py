@@ -40,6 +40,11 @@ def _guild_prefix(discord_bot, discord_msg):
 
 
 def setup_extensions(discord_bot):
+    """
+    Loads the extensions for the bot
+    :param discord_bot:
+    :return:
+    """
     discord_bot.load_extension('cogs.config')
     discord_bot.load_extension('cogs.misc')
     discord_bot.load_extension('cogs.twitch')
@@ -53,6 +58,9 @@ def setup_extensions(discord_bot):
 
 
 class Bot(commands.AutoShardedBot):
+    """
+    The main Bot class for Randomify
+    """
     def __init__(self, **options):
         super().__init__(command_prefix=_guild_prefix, **options)
         self.db_client = pymongo.MongoClient(MONGO_DB_URL)

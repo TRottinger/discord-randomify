@@ -15,6 +15,9 @@ def prepare_output_string(author, streamer_name, game_name, viewer_count):
 
 
 class Twitch(commands.Cog):
+    """
+    Main cog Class for Twitch functionality
+    """
     def __init__(self, bot):
         self.bot = bot
         self.twitch_helpers = twitch_helpers.TwitchHelpers()
@@ -22,6 +25,11 @@ class Twitch(commands.Cog):
     @commands.command(name="twitch", description="Get a link to a random streamer", aliases=["stream", "streamer"],
                       brief="Get a random twitch streamer")
     async def twitch(self, ctx):
+        """
+        Gets a random twitch stream and returns it to the author
+        :param ctx:
+        :return:
+        """
         log.info('Got twitch call')
         games, weighted_id_game_selector = self.twitch_helpers.get_twitch_games()
         log.info('Got weighted_id_game_selector_size ' + str(len(weighted_id_game_selector)))
@@ -42,7 +50,16 @@ class Twitch(commands.Cog):
     @commands.command(name="twitchgame", description="Get a link to a random streamer playing a specific game",
                       aliases=["game_stream", "twitch_game"], usage="<game_name>",
                       brief="Get a random twitch streamer by game")
-    async def twitch_game(self, ctx, *, arg):
+    async def twitchgame(self, ctx, *, arg):
+        """
+        Gets a random twitch stream by game and returns it to the author
+        Do not use quotes when passing in the game
+        The bot will treat everything after twitchgame as the game
+        Example: twitchgame League of Legends
+        :param ctx:
+        :param arg:
+        :return:
+        """
         game_name_picked = arg
         game_id_picked = self.twitch_helpers.get_game_by_name(game_name_picked)
 

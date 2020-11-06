@@ -17,6 +17,13 @@ class Streamer:
 
 
 def get_twitch_access_token(client_id, client_secret, url='https://id.twitch.tv/oauth2/token'):
+    """
+    Gets access token for twitch and returns it
+    :param client_id:
+    :param client_secret:
+    :param url:
+    :return: access_token
+    """
     headers = {
         'client_id': client_id,
         'client_secret': client_secret,
@@ -32,6 +39,9 @@ def get_twitch_access_token(client_id, client_secret, url='https://id.twitch.tv/
 
 
 class TwitchHelpers:
+    """
+    Class for common helpers for Twitch functionality
+    """
     def __init__(self, client_id=None, client_secret=None):
         if client_id is None:
             self.client_id = os.getenv('TWITCH_CLIENT_ID')
@@ -45,6 +55,10 @@ class TwitchHelpers:
 
     # Returns a dictionary of top 100 twitch games
     def get_twitch_games(self):
+        """
+        Returns a list of games and their weights
+        :return: dictionary of game id to game name, and weighted game ids
+        """
         headers = {
             'client-id': self.client_id,
             'Authorization': 'Bearer ' + self.access_token,
@@ -67,6 +81,11 @@ class TwitchHelpers:
         return game_dict, weighted_game_ids
 
     def get_game_by_name(self, game_name):
+        """
+        returns a game field by game_name
+        :param game_name:
+        :return: game
+        """
         headers = {
             'client-id': self.client_id,
             'Authorization': 'Bearer ' + self.access_token,
@@ -80,6 +99,12 @@ class TwitchHelpers:
 
     # Returns a list of streamers
     def get_twitch_streams(self, game_id=0, language=''):
+        """
+        Gets a list of twitch streams under game_id in the specified language
+        :param game_id:
+        :param language:
+        :return: List of streams
+        """
         streams_request_url = 'https://api.twitch.tv/helix/streams'
 
         headers = {
@@ -111,6 +136,11 @@ class TwitchHelpers:
         return streamers
 
     def get_streamer(self, game_id):
+        """
+        Selects a random streamer and returns information about that
+        :param game_id:
+        :return: streamer
+        """
         streamers = self.get_twitch_streams(game_id)
 
         if streamers is None:
@@ -127,6 +157,11 @@ class TwitchHelpers:
 
     # Returns streamers user name for twitch link
     def get_streamer_login_name(self, streamer):
+        """
+        Gets streamer login name from Twitch and returns it
+        :param streamer:
+        :return: streamer login_name
+        """
         headers = {
             'client-id': self.client_id,
             'Authorization': 'Bearer ' + self.access_token,

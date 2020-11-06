@@ -10,7 +10,7 @@ class Anime(commands.Cog):
     @commands.command(name="anime", description="Get a random anime", brief="Get a random anime")
     async def anime(self, ctx):
         """
-        Gets a random anime from anidb.net
+        Gets a random anime from anidb.net then sends it to the author
         :param ctx:
         :return:
         """

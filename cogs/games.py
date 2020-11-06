@@ -179,12 +179,24 @@ class WorldOfWarcraft:
         return achievements
 
     async def get_random_wow_class(self):
+        """
+        Returns a random wow class
+        :return: class
+        """
         return random.choice(self.classes)
 
     async def get_random_wow_race(self):
+        """
+        Returns a random wow race
+        :return: race
+        """
         return random.choice(self.races)
 
     async def get_random_wow_achievement(self):
+        """
+        Returns a random wow achievement
+        :return: achievement
+        """
         return random.choice(self.achievements)
 
 
