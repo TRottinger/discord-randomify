@@ -44,7 +44,7 @@ def build_url_kwargs(url, **kwargs):
     return url
 
 
-def build_twitch_streams_url(url, first, game_id, after):
+def build_twitch_streams_url(url: str, first: str, game_id: str, after: str) -> str:
     """
     Builds streams url for Twitch based on different parameters
     :param url:

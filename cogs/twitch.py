@@ -76,8 +76,8 @@ class Twitch(commands.Cog):
             log.info('Sending out result string: ' + result_string)
             await ctx.send(result_string)
 
-    @twitch_game.error
-    async def twitch_game_error(self, ctx, error):
+    @twitchgame.error
+    async def twitchgame_error(self, ctx, error):
         author = ctx.author.mention
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send(author + ' - Please provide an argument')
