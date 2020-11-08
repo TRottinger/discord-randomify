@@ -2,7 +2,7 @@
 layout: page
 title: "Commands"
 url: "commands/spotify.html"
-----------------------------
+---
 
 ### Spotify
 
