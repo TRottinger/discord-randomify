@@ -8,7 +8,7 @@ Randomify is a Discord bot for all your random needs! It grew from
 ### Commands
 
 To view the current list of available commands, go to [the Commands
-listing](./commands.md)
+listing](commands.md)
 
 Here are some popular commands
 

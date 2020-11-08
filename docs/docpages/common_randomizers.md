@@ -17,4 +17,4 @@ you can give the command a parameter.
 
 
 
-[Return to main](../index.md)
+[Return to Commands](../commands.md)
