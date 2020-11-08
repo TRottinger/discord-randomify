@@ -39,14 +39,22 @@ class CustomHelpCommand(commands.DefaultHelpCommand):
         help_commands = await self.filter_commands(commands_listing, sort=True)
         inline = False
         # If the message was spawned from a DM, let's not go through the trouble of paginating
-        if self.context.guild is None:
+        manage_messages = self.context.channel.permissions_for(self.context.guild.me).manage_messages
+        print(str(manage_messages))
+        if self.context.guild is not None and manage_messages is True:
+            commands_to_paginate = []
+            for command in help_commands:
+                command_help_entry = CommandHelpEntry(command.name, command.usage, str(command.short_doc))
+                commands_to_paginate.append(command_help_entry)
+            await self.paginate_help(commands_to_paginate)
+        else:
             embed = discord.Embed(title='Command Listings')
             embed.colour = discord.Colour.blue()
             embed.description = '''
-            List of commands available for Randomify
-            For a more user-friendly list of help commands, visit:
-            https://trottinger.github.io/discord-randomify/commands
-            '''
+                        List of commands available for Randomify
+                        For a more user-friendly list of help commands, visit:
+                        https://trottinger.github.io/discord-randomify/commands
+                        '''
             embed.set_author(name='Randomify Help Page')
             embed.set_thumbnail(url=self.context.bot.user.avatar_url)
             embed.set_footer(text='Thanks for using Randomify!')
@@ -57,13 +65,7 @@ class CustomHelpCommand(commands.DefaultHelpCommand):
                 else:
                     embed.add_field(name=str(command.name), value=str(command.short_doc), inline=inline)
 
-            await self.context.send(embed=embed)
-        else:
-            commands_to_paginate = []
-            for command in help_commands:
-                command_help_entry = CommandHelpEntry(command.name, command.usage, str(command.short_doc))
-                commands_to_paginate.append(command_help_entry)
-            await self.paginate_help(commands_to_paginate)
+            await self.context.author.send(embed=embed)
 
     # Credit Diggy on Stack Overflow: https://stackoverflow.com/a/61793587
     async def paginate_help(self, command_listing):
@@ -84,11 +86,11 @@ class CustomHelpCommand(commands.DefaultHelpCommand):
             To set a custom prefix, try: !rt help prefix
             
             Page {page}/{pages}
-            '''.format(page=str(i+1), pages=str(pages))
+            '''.format(page=str(i + 1), pages=str(pages))
             for j in range(0, 10):
-                if (i*10) + j == len(command_listing):
+                if (i * 10) + j == len(command_listing):
                     break
-                curr_command = command_listing[(i*10) + j]
+                curr_command = command_listing[(i * 10) + j]
                 if curr_command.usage is not None:
                     embed.add_field(name=str(curr_command.name) + ' ' + str(curr_command.usage),
                                     value=str(curr_command.desc),
@@ -164,16 +166,16 @@ class Bot(commands.AutoShardedBot):
         :return:
         """
         self.load_extension('cogs.config')
-        self.load_extension('cogs.misc')
-        self.load_extension('cogs.twitch')
-        self.load_extension('cogs.reddit')
-        self.load_extension('cogs.wiki')
-        self.load_extension('cogs.common_randomizers')
-        self.load_extension('cogs.games')
-        self.load_extension('cogs.youtube')
-        self.load_extension('cogs.anime')
-        self.load_extension('cogs.admin')
-        self.load_extension('cogs.spotify')
+        # self.load_extension('cogs.misc')
+        # self.load_extension('cogs.twitch')
+        # self.load_extension('cogs.reddit')
+        # self.load_extension('cogs.wiki')
+        # self.load_extension('cogs.common_randomizers')
+        # self.load_extension('cogs.games')
+        # self.load_extension('cogs.youtube')
+        # self.load_extension('cogs.anime')
+        # self.load_extension('cogs.admin')
+        # self.load_extension('cogs.spotify')
 
     def startup(self):
         self.run(TOKEN, reconnect=True)
