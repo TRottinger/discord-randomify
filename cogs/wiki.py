@@ -1,3 +1,4 @@
+import discord
 from discord.ext import commands
 import random
 import wikipedia
@@ -22,9 +23,11 @@ class Wiki(commands.Cog):
         except wikipedia.DisambiguationError as e:
             s = random.choice(e.options)
             info = wikipedia.page(s)
-        url = info.url
-        author = ctx.author.mention
-        await ctx.send(author + ' ' + str(url) + '')
+        embed = discord.Embed(title='Random Wikipedia')
+        embed.add_field(name=info.original_title, value=info.url, inline=False)
+        embed.add_field(name='Summary', value=info.summary, inline=False)
+        embed.set_footer(text='Images hidden for SFW purposes')
+        await ctx.send(embed=embed)
 
 
 def setup(bot):

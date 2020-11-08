@@ -11,8 +11,8 @@ Here is the listing for all the Spotify commands
 Note that any command with a \<value\> next to it signifies
 you can give the command a parameter.
 
-| Command | Response            | Extra Notes      |
-|:--------|:--------------------|:-----------------|
-| song    | Random Spotify link | Aliases: spotify |
+| Command | Response                               | Extra Notes      |
+|:--------|:---------------------------------------|:-----------------|
+| song    | Random Spotify link. Non-explicit only | Aliases: spotify |
 
 [Return to Commands](../commands.md)

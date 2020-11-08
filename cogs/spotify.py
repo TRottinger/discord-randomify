@@ -12,7 +12,7 @@ from utils.http_helpers import send_get_request
 
 log = logging.getLogger(__name__)
 
-SPOTIFY_QUERY_RATE_PER_HOUR = 10
+SPOTIFY_QUERY_RATE_PER_HOUR = 1
 
 # This class is very similar to the YouTube class
 # I should look into combining them into a "media" class
@@ -55,8 +55,10 @@ class Spotify(commands.Cog):
                     'Link': url,
                     'Query': random_query_word
                 }
-                self.songs.append(item)
-                self.db_songs_table.insert_one(item)
+                # only add SFW tracks
+                if track['explicit'] is False:
+                    self.songs.append(item)
+                    self.db_songs_table.insert_one(item)
         else:
             log.warning('Received response code: ' + str(status_code))
         self.queries_this_hour += 1

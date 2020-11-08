@@ -42,7 +42,7 @@ class YouTube(commands.Cog):
             'Accept': 'application/json'
         }
         query_url = build_url_kwargs(self.videos_url, key=YOUTUBE_API_KEY, q=random_query_word, maxResults='50',
-                                     type='video', part='id')
+                                     type='video', part='id', safeSearch='strict')
         response = send_get_request(query_url, headers=headers)
         status_code = handle_status_code(response)
         if status_code == 'OK':
