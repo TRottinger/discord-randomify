@@ -15,8 +15,6 @@ class Wiki(commands.Cog):
     async def wiki(self, ctx):
         """
         Gets a random wikipedia link and returns it to the user
-        :param ctx:
-        :return:
         """
         page = wikipedia.random(1)
         try:

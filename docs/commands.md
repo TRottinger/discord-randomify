@@ -11,6 +11,7 @@ To browse the commands, please select a category.
 - [Games](commands/games.md)
 - [Miscellaneous](commands/misc.md)
 - [Reddit](commands/reddit.md)
+- [Spotify](commands/spotify.md)
 - [Twitch](commands/twitch.md)
 - [Wikipedia](commands/wiki.md)
 - [YouTube](commands/youtube.md)

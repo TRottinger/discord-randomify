@@ -48,8 +48,6 @@ class Twitch(commands.Cog):
     async def twitch(self, ctx):
         """
         Gets a random twitch stream and returns it to the author
-        :param ctx:
-        :return:
         """
         games, weighted_id_game_selector = self.twitch_helpers.get_twitch_games()
         if games is None or weighted_id_game_selector is None:
@@ -83,9 +81,6 @@ class Twitch(commands.Cog):
         Do not use quotes when passing in the game
         The bot will treat everything after twitchgame as the game
         Example: twitchgame League of Legends
-        :param ctx:
-        :param arg:
-        :return:
         """
         game_name_picked = arg
         game_id_picked = self.twitch_helpers.get_game_by_name(game_name_picked)

@@ -99,8 +99,6 @@ class YouTube(commands.Cog):
     async def youtube(self, ctx):
         """
         Gets a random YouTube link and returns it to the author
-        :param ctx:
-        :return:
         """
         if self.queries_this_hour < YOUTUBE_SEARCH_LIMIT_PER_HOUR:
             await self.request_new_videos()

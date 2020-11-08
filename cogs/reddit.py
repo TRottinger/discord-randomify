@@ -12,8 +12,6 @@ class Reddit(commands.Cog):
     async def reddit(self, ctx):
         """
         Gets a random subreddit and outputs it to the chat
-        :param ctx:
-        :return:
         """
         try:
             urlopen = urllib.request.Request('https://www.reddit.com/r/random')
