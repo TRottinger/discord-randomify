@@ -6,14 +6,14 @@ url: "commands.html"
 
 To browse the commands, please select a category.
 
-- [Anime](./docpages/anime.md)
-- [Common Randomizers](./docpages/common_randomizers.md)
-- [Configuration and Information](./docpages/config.md)
-- [Games](./docpages/games.md)
-- [Miscellaneous](./docpages/misc.md)
-- [Reddit](./docpages/reddit.md)
-- [Twitch](./docpages/twitch.md)
-- [Wikipedia](./docpages/wiki.md)
-- [YouTube](./docpages/youtube.md)
+- [Anime](commands/anime.md)
+- [Common Randomizers](commands/common_randomizers.md)
+- [Configuration and Information](commands/config.md)
+- [Games](commands/games.md)
+- [Miscellaneous](commands/misc.md)
+- [Reddit](commands/reddit.md)
+- [Twitch](commands/twitch.md)
+- [Wikipedia](commands/wiki.md)
+- [YouTube](commands/youtube.md)
 
 [Return to main](index.md)
