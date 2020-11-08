@@ -39,9 +39,12 @@ class CustomHelpCommand(commands.DefaultHelpCommand):
         help_commands = await self.filter_commands(commands_listing, sort=True)
         inline = False
         # If the message was spawned from a DM, let's not go through the trouble of paginating
-        manage_messages = self.context.channel.permissions_for(self.context.guild.me).manage_messages
-        print(str(manage_messages))
-        if self.context.guild is not None and manage_messages is True:
+        if self.context.guild is not None:
+            manage_messages = self.context.channel.permissions_for(self.context.guild.me).manage_messages
+            print(str(manage_messages))
+        else:
+            manage_messages = False
+        if manage_messages is True:
             commands_to_paginate = []
             for command in help_commands:
                 command_help_entry = CommandHelpEntry(command.name, command.usage, str(command.short_doc))
@@ -166,16 +169,16 @@ class Bot(commands.AutoShardedBot):
         :return:
         """
         self.load_extension('cogs.config')
-        # self.load_extension('cogs.misc')
-        # self.load_extension('cogs.twitch')
-        # self.load_extension('cogs.reddit')
-        # self.load_extension('cogs.wiki')
-        # self.load_extension('cogs.common_randomizers')
-        # self.load_extension('cogs.games')
-        # self.load_extension('cogs.youtube')
-        # self.load_extension('cogs.anime')
-        # self.load_extension('cogs.admin')
-        # self.load_extension('cogs.spotify')
+        self.load_extension('cogs.misc')
+        self.load_extension('cogs.twitch')
+        self.load_extension('cogs.reddit')
+        self.load_extension('cogs.wiki')
+        self.load_extension('cogs.common_randomizers')
+        self.load_extension('cogs.games')
+        self.load_extension('cogs.youtube')
+        self.load_extension('cogs.anime')
+        self.load_extension('cogs.admin')
+        self.load_extension('cogs.spotify')
 
     def startup(self):
         self.run(TOKEN, reconnect=True)
