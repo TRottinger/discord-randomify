@@ -3,10 +3,8 @@ import os
 
 import discord
 from discord.ext import commands
-from discord import Activity, ActivityType
 from dotenv import load_dotenv
 import logging
-import dns
 import pymongo
 
 logging.basicConfig(filename='info.log', filemode='w', level=logging.INFO)
@@ -70,7 +68,6 @@ class Bot(commands.AutoShardedBot):
         self.repeat_dict = {}
         self.owner_id = OWNER_ID
         self.support_id = SHARED_SERVER
-        self.help_command = discord.ext.commands.DefaultHelpCommand(dm_help=True)
 
     async def on_command_error(self, ctx, error):
         if isinstance(error, commands.CommandNotFound):
@@ -95,7 +92,6 @@ class Bot(commands.AutoShardedBot):
             self.repeat_dict[str(ctx.message.author)] = ctx
 
     async def set_guild_prefix(self, guild, prefix):
-        res = ''
         if prefix == '':
             res = 'Empty prefix'
         elif prefix.isspace():
