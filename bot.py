@@ -3,10 +3,8 @@ import os
 
 import discord
 from discord.ext import commands
-from discord import Activity, ActivityType
 from dotenv import load_dotenv
 import logging
-import dns
 import pymongo
 
 logging.basicConfig(filename='info.log', filemode='w', level=logging.INFO)
@@ -16,8 +14,17 @@ log = logging.getLogger(__name__)
 
 # Load twitch client id and secret into file
 load_dotenv()
-TOKEN = os.getenv('DISCORD_TOKEN')
+TESTING = os.getenv('testing')
+
+if TESTING == 'True':
+    TOKEN = os.getenv('TEST_DISCORD_TOKEN')
+else:
+    TOKEN = os.getenv('DISCORD_TOKEN')
+
 MONGO_DB_URL = os.getenv('MONGO_DB')
+
+OWNER_ID = 179780915558481929
+SHARED_SERVER = 773783340763316224
 
 
 def _guild_prefix(discord_bot, discord_msg):
@@ -30,26 +37,37 @@ def _guild_prefix(discord_bot, discord_msg):
         return [discord_bot.default_prefix, custom_prefix]
 
 
+def setup_extensions(discord_bot):
+    """
+    Loads the extensions for the bot
+    :param discord_bot:
+    :return:
+    """
+    discord_bot.load_extension('cogs.config')
+    discord_bot.load_extension('cogs.misc')
+    discord_bot.load_extension('cogs.twitch')
+    discord_bot.load_extension('cogs.reddit')
+    discord_bot.load_extension('cogs.wiki')
+    discord_bot.load_extension('cogs.common_randomizers')
+    discord_bot.load_extension('cogs.games')
+    discord_bot.load_extension('cogs.youtube')
+    discord_bot.load_extension('cogs.anime')
+    discord_bot.load_extension('cogs.admin')
+
+
 class Bot(commands.AutoShardedBot):
+    """
+    The main Bot class for Randomify
+    """
     def __init__(self, **options):
         super().__init__(command_prefix=_guild_prefix, **options)
         self.db_client = pymongo.MongoClient(MONGO_DB_URL)
         self.db_bot = self.db_client.get_database('Bot')
         self.db_prefix_table = self.db_bot.get_collection('GuildPrefixes')
-        # map ctx to user to be able to repeat command
         self.default_prefix = '!rt '
         self.repeat_dict = {}
-        self.load_extension('cogs.config')
-        self.load_extension('cogs.misc')
-        self.load_extension('cogs.twitch')
-        self.load_extension('cogs.reddit')
-        self.load_extension('cogs.wiki')
-        self.load_extension('cogs.common_randomizers')
-        self.load_extension('cogs.league_of_legends')
-        self.load_extension('cogs.youtube')
-        # self.load_extension('cogs.anime')
-        self.load_extension('cogs.admin')
-        super().run(TOKEN, reconnect=True)
+        self.owner_id = OWNER_ID
+        self.support_id = SHARED_SERVER
 
     async def on_command_error(self, ctx, error):
         if isinstance(error, commands.CommandNotFound):
@@ -59,6 +77,14 @@ class Bot(commands.AutoShardedBot):
         await self.change_presence(activity=discord.Activity(type=discord.ActivityType.playing,
                                                              name='on the Cloud. !rt help'))
 
+    async def on_guild_join(self, guild):
+        channel = self.get_guild(self.support_id).text_channels[0]
+        await channel.send('GUILD ADDED ALERT: ' + str(guild) + '. Large guild?: ' + str(guild.large))
+
+    async def on_guild_remove(self, guild):
+        channel = self.get_guild(self.support_id).text_channels[0]
+        await channel.send('GUILD REMOVED ALERT: ' + str(guild) + '. Large guild?: ' + str(guild.large))
+
     async def on_command_completion(self, ctx):
         # add to repeat dict if not 'repeat' called
         str_command = str(ctx.command)
@@ -66,7 +92,6 @@ class Bot(commands.AutoShardedBot):
             self.repeat_dict[str(ctx.message.author)] = ctx
 
     async def set_guild_prefix(self, guild, prefix):
-        res = ''
         if prefix == '':
             res = 'Empty prefix'
         elif prefix.isspace():
@@ -94,4 +119,6 @@ class Bot(commands.AutoShardedBot):
 
 
 if __name__ == '__main__':
-    bot = Bot()
+    bot = Bot(intents=discord.Intents.default())
+    setup_extensions(bot)
+    bot.run(TOKEN, reconnect=True)

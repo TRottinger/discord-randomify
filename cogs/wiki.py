@@ -4,12 +4,20 @@ import wikipedia
 
 
 class Wiki(commands.Cog):
+    """
+    Main cog Class for wikipedia functionality
+    """
     def __init__(self, bot):
         self.bot = bot
 
     @commands.command(name="wiki", description="Get a link to a random wiki article", aliases=["wikipedia"],
                       brief="Get a random wiki article")
     async def wiki(self, ctx):
+        """
+        Gets a random wikipedia link and returns it to the user
+        :param ctx:
+        :return:
+        """
         page = wikipedia.random(1)
         try:
             info = wikipedia.page(page)

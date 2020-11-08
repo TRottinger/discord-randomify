@@ -18,6 +18,9 @@ YOUTUBE_SEARCH_LIMIT_PER_HOUR = 4
 
 
 class YouTube(commands.Cog):
+    """
+    Main YouTube cog Class
+    """
     def __init__(self, bot):
         self.bot = bot
         self.videos = []
@@ -27,6 +30,12 @@ class YouTube(commands.Cog):
         self.db_links_table = self.db_youtube.YoutubeLinks
 
     async def request_new_videos(self):
+        """
+        Requests new videos from the YouTube database and stores them
+        It stores them in the local list and the MongoDB database
+        The bot is rate limited because Google is really anal with their limits
+        :return:
+        """
         random_query_word = get_random_query()
         print(random_query_word)
         headers = {
@@ -50,20 +59,36 @@ class YouTube(commands.Cog):
         self.queries_this_hour += 1
 
     async def populate_on_ready_from_db(self):
+        """
+        Loads in videos from MongoDB
+        :return:
+        """
         self.videos = [link for link in self.db_links_table.find()]
 
     @commands.Cog.listener()
     async def on_ready(self):
+        """
+        Populates from DB on bot start up
+        :return:
+        """
         log.info('Loading YouTube cog')
         await self.populate_on_ready_from_db()
         await self.reset_count.start()
 
     @tasks.loop(minutes=60)
     async def reset_count(self):
+        """
+        Resets the manually set rate limit every hour
+        :return:
+        """
         self.queries_this_hour = 0
 
     @reset_count.before_loop
     async def before_reset_count(self):
+        """
+        Does some stuff before resetting the count. Might as well use our hourly rate if it wasn't met
+        :return:
+        """
         log.info("Preparing to reset count")
         while self.queries_this_hour < YOUTUBE_SEARCH_LIMIT_PER_HOUR:
             await self.request_new_videos()
@@ -72,6 +97,11 @@ class YouTube(commands.Cog):
     @commands.command(name="youtube", description="Get a link to a random youtube video", aliases=["ytube", "yt"],
                       brief="Get a random youtube video")
     async def youtube(self, ctx):
+        """
+        Gets a random YouTube link and returns it to the author
+        :param ctx:
+        :return:
+        """
         if self.queries_this_hour < YOUTUBE_SEARCH_LIMIT_PER_HOUR:
             await self.request_new_videos()
 

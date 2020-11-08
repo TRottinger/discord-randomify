@@ -4,6 +4,13 @@ import re
 # Function to build a url for http request
 # Expects args to be in the format of header=value (str)
 def build_url(url, *argv):
+    """
+    Builds a url with query
+    Expects format of key=value
+    :param url:
+    :param argv:
+    :return:
+    """
     if len(argv) == 0:
         return url
     url += '?'
@@ -19,6 +26,13 @@ def build_url(url, *argv):
 
 
 def build_url_kwargs(url, **kwargs):
+    """
+    Builds a url with query and kwargs
+    Expects kwargs to be in the format of key=value
+    :param url:
+    :param kwargs:
+    :return:
+    """
     if len(kwargs) == 0:
         return url
     url += '?'
@@ -30,7 +44,15 @@ def build_url_kwargs(url, **kwargs):
     return url
 
 
-def build_twitch_streams_url(url, first, game_id, after):
+def build_twitch_streams_url(url: str, first: str, game_id: str, after: str) -> str:
+    """
+    Builds streams url for Twitch based on different parameters
+    :param url:
+    :param first:
+    :param game_id:
+    :param after:
+    :return:
+    """
     return_url = ''
     if game_id != '0':
         if after != '0':

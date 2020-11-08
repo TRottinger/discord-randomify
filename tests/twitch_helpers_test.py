@@ -6,6 +6,7 @@ import dotenv
 from _pytest.monkeypatch import MonkeyPatch
 import utils.twitch_helpers
 from utils.twitch_helpers import TwitchHelpers
+from utils import http_helpers
 
 DUMMY_ACCESS_TOKEN = '420'
 
@@ -25,7 +26,7 @@ def mocked_requests_get(*args, **kwargs):
     return MockResponse(None, 404)
 
 
-def mocked_get_twitch_access_token(*args):
+def mocked_get_access_token(*args):
     return DUMMY_ACCESS_TOKEN
 
 
@@ -36,7 +37,7 @@ def mocked_load_dotenv(*args):
 class TwitchHelpersTests(TestCase):
     def test_initialize(self):
         monkeypatch = MonkeyPatch()
-        monkeypatch.setattr(utils.twitch_helpers, "get_twitch_access_token", mocked_get_twitch_access_token)
+        monkeypatch.setattr(utils.http_helpers, "get_access_token", mocked_get_access_token)
         twitch_helpers = TwitchHelpers(client_id='123', client_secret='456')
         self.assertEqual(twitch_helpers.client_id, '123')
         self.assertEqual(twitch_helpers.client_secret, '456')
@@ -44,7 +45,7 @@ class TwitchHelpersTests(TestCase):
 
     def test_initialize_from_env_variables(self):
         monkeypatch = MonkeyPatch()
-        monkeypatch.setattr(utils.twitch_helpers, "get_twitch_access_token", mocked_get_twitch_access_token)
+        monkeypatch.setattr(utils.http_helpers, "get_access_token", mocked_get_access_token)
         monkeypatch.setattr(dotenv, "load_dotenv", mocked_load_dotenv)
         monkeypatch.setenv('TWITCH_CLIENT_ID', 'ENV_123')
         monkeypatch.setenv('TWITCH_CLIENT_SECRET', 'ENV_456')

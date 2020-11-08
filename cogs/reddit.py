@@ -10,6 +10,11 @@ class Reddit(commands.Cog):
     @commands.command(name="reddit", description="Get a link to a random subreddit", brief="Get a random subreddit",
                       aliases=["subreddit"])
     async def reddit(self, ctx):
+        """
+        Gets a random subreddit and outputs it to the chat
+        :param ctx:
+        :return:
+        """
         try:
             urlopen = urllib.request.Request('https://www.reddit.com/r/random')
             urlopen.add_header('User-Agent', 'discord-bot/0.0.1')
