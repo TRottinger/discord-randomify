@@ -1,4 +1,3 @@
-import requests
 import os
 from dotenv import load_dotenv
 
@@ -33,6 +32,10 @@ class TwitchHelpers:
             self.client_secret = client_secret
         self.access_token = http_helpers.get_access_token(self.client_id, self.client_secret,
                                                           'https://id.twitch.tv/oauth2/token')
+        self.local_stream_cache = []
+
+    def clear_local_cache(self):
+        self.local_stream_cache.clear()
 
     # Returns a dictionary of top 100 twitch games
     def get_twitch_games(self):
@@ -102,14 +105,17 @@ class TwitchHelpers:
 
         # Loop through this function a few times to get a lot of streamers
         # This might have to change if I'm sending too many requests to Twitch.
-        for i in range(0, 7):
+        for i in range(0, 5):
             request_url = build_twitch_streams_url(streams_request_url, '100', str(game_id), after)
 
             response = http_helpers.send_get_request(request_url, headers=headers)
-
+            if http_helpers.handle_status_code(response) == 'Rate Limited':
+                streamers = self.local_stream_cache
+                break
             try:
                 for data in response.json()['data']:
                     streamers.append(data)
+                    self.local_stream_cache.append(data)
             except KeyError:
                 log.warning('No streamers found for game: ' + str(game_id))
                 return None
@@ -151,6 +157,10 @@ class TwitchHelpers:
         headers = http_helpers.form_auth_headers(self.client_id, self.access_token)
         response = http_helpers.send_get_request('https://api.twitch.tv/helix/users?id=' + streamer['user_id'],
                                                  headers=headers)
+
+        if http_helpers.handle_status_code(response) == 'Rate Limited':
+            # Hope for the best
+            return str(streamer['user_id']).encode('UTF-8')
         try:
             data = response.json()['data']
             streamer_login_name = (data[0]['login'])

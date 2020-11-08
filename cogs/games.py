@@ -208,8 +208,7 @@ class Games(commands.Cog):
 
     # League of Legends commands
 
-    @commands.command(name="champion", description="Get a random League of Legends champion",
-                      brief="Get a random League Champion")
+    @commands.command(name="champion", description="Get a random League of Legends champion")
     async def champion(self, ctx):
         """
         Bot command that calls league handler champion()
@@ -218,9 +217,8 @@ class Games(commands.Cog):
         """
         await self.league_handler.champion(ctx)
 
-    @commands.command(name="summonerspell", description="Get a random League of Legends summoner spell",
-                      brief="Get a random League summoner spell")
-    async def summoner_spell(self, ctx):
+    @commands.command(name="summonerspell", description="Get a random League of Legends summoner spell")
+    async def summonerspell(self, ctx):
         """
         Bot command that calls league handler summoner_spell()
         :param ctx:
@@ -228,9 +226,8 @@ class Games(commands.Cog):
         """
         await self.league_handler.summoner_spell(ctx)
 
-    @commands.command(name="champselect", description="Get a random champion and 2 summoner spells",
-                      brief="Get a random champ + 2 summoners")
-    async def champ_select(self, ctx):
+    @commands.command(name="champselect", description="Get a random champion and 2 summoner spells")
+    async def champselect(self, ctx):
         """
         Bot command that calls league handler champ_select()
         :param ctx:
@@ -238,9 +235,8 @@ class Games(commands.Cog):
         """
         await self.league_handler.champ_select(ctx)
 
-    @commands.command(name="summonerspellaram", description="Get a random League of Legends ARAM summoner spell",
-                      brief="Get a random League ARAM summoner spell")
-    async def summoner_spell_aram(self, ctx):
+    @commands.command(name="summonerspellaram", description="Get a random League of Legends ARAM summoner spell")
+    async def summonerspellaram(self, ctx):
         """
         Bot command that calls league handler summoner_spell_aram()
         :param ctx:
@@ -248,9 +244,8 @@ class Games(commands.Cog):
         """
         await self.league_handler.summoner_spell_aram(ctx)
 
-    @commands.command(name="champselectaram", description="Get 2 summoner spells for ARAM",
-                      brief="Get 2 ARAM summoners")
-    async def champ_select_aram(self, ctx):
+    @commands.command(name="champselectaram", description="Get 2 summoner spells for ARAM")
+    async def champselectaram(self, ctx):
         """
         Bot command that calls league handler champ_select_aram()
         :param ctx:
@@ -258,9 +253,8 @@ class Games(commands.Cog):
         """
         await self.league_handler.champ_select_aram(ctx)
 
-    @commands.command(name="aramreroll", description="Get Y/N value on whether you should reroll",
-                      brief="Get reroll Y/N")
-    async def aram_reroll(self, ctx):
+    @commands.command(name="aramreroll", description="Get Y/N value on whether you should reroll")
+    async def aramreroll(self, ctx):
         """
         Bot command that calls league handler aram_reroll()
         :param ctx:
@@ -273,7 +267,7 @@ class Games(commands.Cog):
     # ***********************************
     # World of Warcraft Commands
 
-    @commands.command(name='wowclass', description='Get a random World of Warcraft class', brief='Random WoW class')
+    @commands.command(name='wowclass', description='Get a random World of Warcraft class')
     async def wowclass(self, ctx):
         """
         Bot command that calls wow handler get_random_wow_class() to get a random class
@@ -285,7 +279,7 @@ class Games(commands.Cog):
         author = ctx.author.mention
         await ctx.send(author + ' You got ' + choice + '!')
 
-    @commands.command(name='wowrace', description='Get a random World of Warcraft race', brief='Random WoW race')
+    @commands.command(name='wowrace', description='Get a random World of Warcraft race')
     async def wowrace(self, ctx):
         """
         Bot command that calls wow handler get_random_wow_race() to get a random race
@@ -297,8 +291,7 @@ class Games(commands.Cog):
         author = ctx.author.mention
         await ctx.send(author + ' You got ' + str(choice) + '!')
 
-    @commands.command(name='wowachieve', description='Get a random World of Warcraft achievement',
-                      brief='Random WoW achievement')
+    @commands.command(name='wowachieve', description='Get a random World of Warcraft achievement')
     async def wowachieve(self, ctx):
         """
         Bot command that calls wow handler get_random_wow_achievement() to get a random achievement

@@ -20,6 +20,8 @@ def handle_status_code(response):
         val = 'Forbidden'
     elif response.status_code == 404:
         val = 'Not Found'
+    elif response.status_code == 429:
+        val = 'Rate Limited'
     elif response.status_code == 200:
         val = 'OK'
     elif response.status_code == 500:

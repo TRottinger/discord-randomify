@@ -7,8 +7,7 @@ class MiscFunctions(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name='repeat', description='Repeat your last run command',
-                      brief='Repeat your command')
+    @commands.command(name='repeat', description='Repeat your last run command')
     async def repeat(self, ctx):
         """
         Repeats your last run command
@@ -23,8 +22,7 @@ class MiscFunctions(commands.Cog):
         else:
             await ctx.send(ctx.author.mention + ' please run a command first')
 
-    @commands.command(name='time', description='Get a random time',
-                      brief='Get a random time')
+    @commands.command(name='time', description='Get a random time')
     async def time(self, ctx):
         """
         Gets a random time and outputs it to the user. Format is 24 hour clock.
@@ -36,39 +34,48 @@ class MiscFunctions(commands.Cog):
         time = str(hour) + ':' + str(minute)
         await ctx.send(ctx.author.mention + ' ' + time)
 
-    @commands.command(name='emoji', description='Get a random emoji this bot has access to',
-                      brief='Emoji')
+    @commands.command(name='emoji', description='Get a random emoji from your server')
+    @commands.guild_only()
     async def emoji(self, ctx):
         """
         Selects a random emoji that the bot has access to and outputs it to the channel
         :param ctx:
         :return:
         """
-        emojis = self.bot.emojis
-        emoji_choice = random.choice(emojis)
-        await ctx.send(str(emoji_choice))
+        # emojis = self.bot.emojis
+        # emoji_choice = random.choice(emojis)
+        # await ctx.send(str(emoji_choice))
 
-    @commands.command(name='emojis', description='Get some random emojis this bot has access to',
-                      brief='Emojis. Defaults to 5')
-    async def emojis(self, ctx, *, arg=5):
-        """
-        Selects a certain amount of emojis that the bot has access to and outputs them to the channel
-        The bot will output it in an embedded message
-        An argument for the number of emojis can be passed in. Default 5. Max 20
-        Example: emojis 10
-        :param ctx:
-        :param arg:
-        :return:
-        """
-        if arg > 20:
-            await ctx.send(ctx.author.mention + ' too many emojis requested.')
+        # Changing to only be from current guild for safety reasons
+        emojis = ctx.guild.emojis
+        if len(emojis) == 0:
+            await ctx.send('There are no custom emojis for this server')
         else:
-            emojis = self.bot.emojis
-            emoji_choices = random.sample(emojis, k=arg)
-            embed = discord.Embed(title='Emojis')
-            for emoji in emoji_choices:
-                embed.add_field(name=str(emoji.name), value=str(emoji))
-            await ctx.send(embed=embed)
+            emoji_choice = random.choice(emojis)
+            await ctx.send(str(emoji_choice))
+
+    # @commands.command(name='emojis', description='Get some random emojis this bot has access to',
+    #                  brief='Emojis. Defaults to 5')
+    # async def emojis(self, ctx, *, arg=5):
+    #    """
+    #    Selects a certain amount of emojis that the bot has access to and outputs them to the channel
+    #    The bot will output it in an embedded message
+    #    An argument for the number of emojis can be passed in. Default 5. Max 20
+    #    Example: emojis 10
+    #    :param ctx:
+    #    :param arg:
+    #    :return:
+    #    """
+        #if arg > 20:
+        #    await ctx.send(ctx.author.mention + ' too many emojis requested.')
+        #else:
+        #    emojis = self.bot.emojis
+        #    emoji_choices = random.sample(emojis, k=arg)
+        #    embed = discord.Embed(title='Emojis')
+        #    for emoji in emoji_choices:
+        #        embed.add_field(name=str(emoji.name), value=str(emoji))
+        #    await ctx.send(embed=embed)
+
 
 
 def setup(bot):
