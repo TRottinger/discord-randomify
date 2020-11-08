@@ -1,3 +1,9 @@
+---
+layout: page
+title: "Commands"
+url: "commands/common.html"
+---
+
 ### Common Randomizers
 
 Here is the listing for all the Common Randomizers commands.

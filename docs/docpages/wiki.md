@@ -1,3 +1,9 @@
+---
+layout: page
+title: "Commands"
+url: "commands/wiki.html"
+---
+
 ### Wikipedia
 
 Here is the listing for all the Wikipedia commands
@@ -9,4 +15,4 @@ you can give the command a parameter.
 |:--------|:----------------------|:------------|
 | wiki    | Random Wikipedia link | Aliases: wikipedia |
 
-[Return to main](../index.md)
+[Return to Commands](../commands.md)

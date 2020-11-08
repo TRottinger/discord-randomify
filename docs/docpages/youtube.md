@@ -1,3 +1,9 @@
+---
+layout: page
+title: "Commands"
+url: "commands/youtube.html"
+---
+
 ### YouTube
 
 Here is the listing for all the YouTube commands
@@ -9,4 +15,4 @@ you can give the command a parameter.
 |:--------|:--------------------|:------------|
 | youtube | Random YouTube link | Aliases: yt |
 
-[Return to main](../index.md)
+[Return to Commands](../commands.md)

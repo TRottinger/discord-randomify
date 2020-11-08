@@ -1,4 +1,8 @@
-### Commands
+---
+layout: page
+title: "Commands"
+url: "commands.html"
+---
 
 To browse the commands, please select a category.
 
@@ -11,3 +15,5 @@ To browse the commands, please select a category.
 - [Twitch](./docpages/twitch.md)
 - [Wikipedia](./docpages/wiki.md)
 - [YouTube](./docpages/youtube.md)
+
+[Return to main](index.md)

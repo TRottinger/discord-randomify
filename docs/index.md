@@ -1,3 +1,7 @@
+---
+layout: default
+title: "Randomify"
+---
 ## Randomify
 
 Randomify is a Discord bot for all your random needs! It grew from
@@ -8,7 +12,7 @@ Randomify is a Discord bot for all your random needs! It grew from
 ### Commands
 
 To view the current list of available commands, go to [the Commands
-listing](commands.md)
+listing](commands)
 
 Here are some popular commands
 

@@ -1,3 +1,9 @@
+---
+layout: page
+title: "Commands"
+url: "commands/anime.html"
+---
+
 ### Anime
 
 Here is the listing for all the Anime commands

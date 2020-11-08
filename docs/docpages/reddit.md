@@ -1,3 +1,9 @@
+---
+layout: page
+title: "Commands"
+url: "commands/reddit.html"
+---
+
 ### Reddit
 
 Here is the listing for all the Reddit commands
@@ -9,4 +15,4 @@ you can give the command a parameter.
 |:--------|:----------------------|:------------|
 | reddit  | Random subreddit link |             |
 
-[Return to main](../index.md)
+[Return to Commands](../commands.md)

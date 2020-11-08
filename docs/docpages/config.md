@@ -1,3 +1,9 @@
+---
+layout: page
+title: "Commands"
+url: "commands/config.html"
+---
+
 ### Configuration and Information
 
 Here is the listing for all the Configuration and Information commands
@@ -14,4 +20,4 @@ you can give the command a parameter.
 | discord          | Returns a link to the support Discord               |                                       |
 | invite           | Returns a link to invite Randomify to your server   |                                       |
 
-[Return to main](../index.md)
+[Return to Commands](../commands.md)

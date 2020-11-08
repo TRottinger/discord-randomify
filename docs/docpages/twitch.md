@@ -1,3 +1,9 @@
+---
+layout: page
+title: "Commands"
+url: "commands/twitch.html"
+---
+
 ### Twitch
 
 Here is the listing for all the Twitch commands
@@ -10,4 +16,4 @@ you can give the command a parameter.
 | twitch               | Random live Twitch stream         |                                |
 | twitchgame \<value\> | Random live Twitch stream by game | Do not use quotes in your game |
 
-[Return to main](../index.md)
+[Return to Commands](../commands.md)
