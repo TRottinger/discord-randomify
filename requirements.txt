@@ -8,3 +8,4 @@ urllib3~=1.25.11
 pytest==6.1.2
 dnspython~=2.0.0
 pymongo[tls,srv]~=3.11.0
+mal~=0.4.0
