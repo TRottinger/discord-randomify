@@ -12,8 +12,6 @@ class MiscFunctions(commands.Cog):
         """
         Repeats your last run command
         This is based off the user's last run command, not the bot's
-        :param ctx:
-        :return:
         """
         author = str(ctx.author)
         last_ctx = self.bot.repeat_dict.get(author)
@@ -26,8 +24,6 @@ class MiscFunctions(commands.Cog):
     async def time(self, ctx):
         """
         Gets a random time and outputs it to the user. Format is 24 hour clock.
-        :param ctx:
-        :return:
         """
         hour = f'{random.randint(0, 23):02}'
         minute = f'{random.randint(0, 59):02}'
@@ -39,8 +35,6 @@ class MiscFunctions(commands.Cog):
     async def emoji(self, ctx):
         """
         Selects a random emoji that the bot has access to and outputs it to the channel
-        :param ctx:
-        :return:
         """
         # emojis = self.bot.emojis
         # emoji_choice = random.choice(emojis)
@@ -75,7 +69,6 @@ class MiscFunctions(commands.Cog):
         #    for emoji in emoji_choices:
         #        embed.add_field(name=str(emoji.name), value=str(emoji))
         #    await ctx.send(embed=embed)
-
 
 
 def setup(bot):

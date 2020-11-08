@@ -11,8 +11,6 @@ class Anime(commands.Cog):
     async def anime(self, ctx):
         """
         Gets a random anime from anidb.net then sends it to the author
-        :param ctx:
-        :return:
         """
         try:
             urlopen = urllib.request.Request('https://anidb.net/anime/random')
