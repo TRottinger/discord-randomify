@@ -1,11 +1,20 @@
+import os
+
 from discord.ext import commands
-import discord
 import random
+from urllib.request import Request
+import urllib.error
+
+from dotenv import load_dotenv
+
+from utils import http_helpers
 
 
 class MiscFunctions(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        load_dotenv()
+        self.cat_api_key = os.getenv('CAT_API_KEY')
 
     @commands.command(name='repeat', description='Repeat your last run command')
     async def repeat(self, ctx):
@@ -69,6 +78,34 @@ class MiscFunctions(commands.Cog):
         #    for emoji in emoji_choices:
         #        embed.add_field(name=str(emoji.name), value=str(emoji))
         #    await ctx.send(embed=embed)
+    @commands.command(name='dog', description='Get a random doggo picture!', brief="Random dog!")
+    async def dog(self, ctx):
+        """
+        Uses the dog.ceo/dog-api endpoint to get a random doggo!
+        """
+        response = http_helpers.send_get_request('https://dog.ceo/api/breeds/image/random', headers=None)
+        if http_helpers.handle_status_code(response) == 'OK':
+            result = response.json()['message']
+        else:
+            result = 'Sorry, I had trouble finding a dog'
+        await ctx.send(str(result))
+
+    @commands.command(name='cat', description='Get a random cat picture!', brief='Random cat!')
+    async def cat(self, ctx):
+        """
+        Uses the cataas.com endpoint to get a random cat
+        """
+        headers = {
+            'x-api-key': self.cat_api_key
+        }
+        response = http_helpers.send_get_request('https://api.thecatapi.com/v1/images/search', headers=headers)
+        if http_helpers.handle_status_code(response) == 'OK':
+            result = random.choice(response.json())
+            result = result['url']
+        else:
+            result = 'Sorry, I had trouble finding a cat'
+
+        await ctx.send(str(result))
 
 
 def setup(bot):

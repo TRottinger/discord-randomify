@@ -65,6 +65,7 @@ class CustomHelpCommand(commands.DefaultHelpCommand):
                 commands_to_paginate.append(command_help_entry)
             await self.paginate_help(commands_to_paginate)
 
+    # Credit Diggy on Stack Overflow: https://stackoverflow.com/a/61793587
     async def paginate_help(self, command_listing):
         bot = self.context.bot
         content = []
@@ -103,9 +104,10 @@ class CustomHelpCommand(commands.DefaultHelpCommand):
 
         await message.add_reaction("◀️")
         await message.add_reaction("▶️")
+        await message.add_reaction("🛑")
 
         def check(reaction, user):
-            return user == self.context.author and str(reaction.emoji) in ["◀️", "▶️"]
+            return user == self.context.author and str(reaction.emoji) in ["◀️", "▶️", "🛑"]
             # This makes sure nobody except the command sender can interact with the "menu"
 
         while True:
@@ -123,6 +125,10 @@ class CustomHelpCommand(commands.DefaultHelpCommand):
                     cur_page -= 1
                     await message.edit(embed=content[cur_page - 1])
                     await message.remove_reaction(reaction, user)
+
+                elif str(reaction.emoji) == "🛑":
+                    await message.delete()
+                    break
 
                 else:
                     await message.remove_reaction(reaction, user)
