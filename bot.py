@@ -170,9 +170,10 @@ class Bot(commands.AutoShardedBot):
         self.load_extension('cogs.wiki')
         self.load_extension('cogs.common_randomizers')
         self.load_extension('cogs.games')
-        # self.load_extension('cogs.youtube')
+        self.load_extension('cogs.youtube')
         self.load_extension('cogs.anime')
         self.load_extension('cogs.admin')
+        self.load_extension('cogs.spotify')
 
     def startup(self):
         self.run(TOKEN, reconnect=True)
