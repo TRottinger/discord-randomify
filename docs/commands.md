@@ -1,7 +1,6 @@
 ---
 layout: page
 title: "Commands"
-url: "commands.html"
 ---
 
 To browse the commands, please select a category.

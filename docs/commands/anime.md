@@ -1,7 +1,6 @@
 ---
 layout: page
 title: "Commands"
-url: "anime.html"
 ---
 
 ### Anime
