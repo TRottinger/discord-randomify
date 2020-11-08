@@ -5,7 +5,7 @@ title: "Randomify"
 ## Randomify
 
 Randomify is a Discord bot for all your random needs! It grew from
- the idea of wanting a random button for twitch into a feature filled,
+ the idea of wanting a random button for Twitch into a feature filled,
  but still developing bot. From random YouTube links to subreddits,
  Randomify can keep you busy for hours on end.
 
