@@ -51,7 +51,7 @@ class CustomHelpCommand(commands.DefaultHelpCommand):
                 commands_to_paginate.append(command_help_entry)
             await self.paginate_help(commands_to_paginate)
         else:
-            embed = discord.Embed(title='Command Listings')
+            embed = discord.Embed(title='Randomify Commands')
             embed.colour = discord.Colour.blue()
             embed.description = '''
                         List of commands available for Randomify
@@ -67,6 +67,10 @@ class CustomHelpCommand(commands.DefaultHelpCommand):
                                     inline=inline)
                 else:
                     embed.add_field(name=str(command.name), value=str(command.short_doc), inline=inline)
+
+                if len(embed.fields) == 20:
+                    await self.context.author.send(embed=embed)
+                    embed.clear_fields()
 
             await self.context.author.send(embed=embed)
 
@@ -175,10 +179,10 @@ class Bot(commands.AutoShardedBot):
         self.load_extension('cogs.wiki')
         self.load_extension('cogs.common_randomizers')
         self.load_extension('cogs.games')
-        self.load_extension('cogs.youtube')
+        #self.load_extension('cogs.youtube')
         self.load_extension('cogs.anime')
         self.load_extension('cogs.admin')
-        self.load_extension('cogs.spotify')
+        #self.load_extension('cogs.spotify')
 
     def startup(self):
         self.run(TOKEN, reconnect=True)
