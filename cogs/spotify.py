@@ -12,7 +12,7 @@ from utils.http_helpers import send_get_request
 
 log = logging.getLogger(__name__)
 
-SPOTIFY_QUERY_RATE_PER_HOUR = 1
+SPOTIFY_QUERY_RATE_PER_HOUR = 10
 
 # This class is very similar to the YouTube class
 # I should look into combining them into a "media" class
