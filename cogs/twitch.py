@@ -1,5 +1,4 @@
 import logging
-
 from discord.ext import commands, tasks
 from utils import twitch_helpers
 import random
@@ -43,11 +42,16 @@ class Twitch(commands.Cog):
         """
         self.twitch_helpers.clear_local_cache()
 
+    # Twitch is the only API we use that could get overloaded
+    # All of the others have manually set rate limits
+    # Lets be safe and apply a cooldown of 3 usages per minute per user
+    @commands.cooldown(3, 60, commands.BucketType.user)
     @commands.command(name="twitch", description="Get a link to a random streamer", aliases=["stream", "streamer"],
                       brief="Get a random twitch streamer")
     async def twitch(self, ctx):
         """
         Gets a random twitch stream and returns it to the author
+        Limit is 3 calls per minute
         """
         games, weighted_id_game_selector = self.twitch_helpers.get_twitch_games()
         if games is None or weighted_id_game_selector is None:
@@ -72,6 +76,7 @@ class Twitch(commands.Cog):
             log.info('Sending out result string: ' + result_string)
             await ctx.send(result_string)
 
+    @commands.cooldown(3, 60, commands.BucketType.user)
     @commands.command(name="twitchgame", description="Get a link to a random streamer playing a specific game",
                       aliases=["game_stream", "twitch_game"], usage="<game_name>",
                       brief="Get a random twitch streamer by game")
@@ -81,6 +86,7 @@ class Twitch(commands.Cog):
         Do not use quotes when passing in the game
         The bot will treat everything after twitchgame as the game
         Example: twitchgame League of Legends
+        Limit is 3 calls per minute
         """
         game_name_picked = arg
         game_id_picked = self.twitch_helpers.get_game_by_name(game_name_picked)

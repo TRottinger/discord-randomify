@@ -6,10 +6,11 @@ from math import ceil
 import discord
 from discord.ext import commands
 from dotenv import load_dotenv
-import logging
 import pymongo
 
 # Load twitch client id and secret into file
+from utils.common_utils import RandomQuery
+
 load_dotenv()
 TESTING = os.getenv('testing')
 
@@ -166,6 +167,7 @@ class Bot(commands.AutoShardedBot):
         self.repeat_dict = {}
         self.support_id = SHARED_SERVER
         self.help_command = CustomHelpCommand()
+        self.random_words = RandomQuery()
 
     def setup_extensions(self):
         """
@@ -174,13 +176,13 @@ class Bot(commands.AutoShardedBot):
         """
         self.load_extension('cogs.config')
         self.load_extension('cogs.misc')
-        self.load_extension('cogs.twitch')
-        self.load_extension('cogs.reddit')
-        self.load_extension('cogs.wiki')
-        self.load_extension('cogs.common_randomizers')
-        self.load_extension('cogs.games')
-        self.load_extension('cogs.youtube')
-        self.load_extension('cogs.anime')
+        #self.load_extension('cogs.twitch')
+        #self.load_extension('cogs.reddit')
+        #self.load_extension('cogs.wiki')
+        #self.load_extension('cogs.common_randomizers')
+        #self.load_extension('cogs.games')
+        #self.load_extension('cogs.youtube')
+        #self.load_extension('cogs.anime')
         self.load_extension('cogs.admin')
         self.load_extension('cogs.spotify')
 
@@ -190,6 +192,12 @@ class Bot(commands.AutoShardedBot):
     async def on_command_error(self, ctx, error):
         if isinstance(error, commands.CommandNotFound):
             await ctx.send(ctx.author.mention + '- Sorry, that command does not exist!')
+        elif isinstance(error, commands.CommandOnCooldown):
+            string = """Sorry, that command is on cooldown.  You can call this command {times} times every {second} sec
+            Try running the command again is {retry} seconds.""".format(
+                times=error.cooldown.rate, second=error.cooldown.per, retry=int(error.retry_after))
+
+            await ctx.send(ctx.author.mention + ' ' + string)
 
     async def on_guild_join(self, guild):
         channel = self.get_guild(self.support_id).text_channels[0]

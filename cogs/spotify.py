@@ -2,20 +2,21 @@ import os
 import random
 import logging
 
+import discord
 from discord.ext import commands, tasks
 from dotenv import load_dotenv
 
-from utils.common_utils import get_random_query
 from utils.url_builder import build_url_kwargs
 from utils.http_helpers import handle_status_code, get_access_token, form_auth_headers
 from utils.http_helpers import send_get_request
 
 log = logging.getLogger(__name__)
 
-SPOTIFY_QUERY_RATE_PER_HOUR = 10
+SPOTIFY_QUERY_RATE_PER_HOUR = 0
 
 # This class is very similar to the YouTube class
 # I should look into combining them into a "media" class
+
 
 
 class Spotify(commands.Cog):
@@ -26,7 +27,7 @@ class Spotify(commands.Cog):
         self.bot = bot
         self.songs = []
         self.queries_this_hour = 0
-        self.songs_url = 'https://api.spotify.com/v1/search'
+        self.search_url = 'https://api.spotify.com/v1/search'
         self.db_spotify = self.bot.db_client.get_database('Spotify')
         self.db_songs_table = self.db_spotify.SpotifySongs
         load_dotenv()
@@ -42,10 +43,10 @@ class Spotify(commands.Cog):
         Rate limited to be safe
         :return:
         """
-        random_query_word = get_random_query()
+        random_query_word = self.bot.random_words.get_random_query_strict()
         print(random_query_word)
         headers = form_auth_headers(self.spotify_client_id, self.access_token)
-        query_url = build_url_kwargs(self.songs_url, q=random_query_word, limit='50', type='track')
+        query_url = build_url_kwargs(self.search_url, q=random_query_word, limit='50', type='track')
         response = send_get_request(query_url, headers=headers)
         status_code = handle_status_code(response)
         if status_code == 'OK':
@@ -112,6 +113,78 @@ class Spotify(commands.Cog):
         song = random.choice(self.songs)
         await ctx.send(author + ' Check this out on Spotify: '
                        + str(song['Link']))
+
+    @commands.cooldown(3, 60, commands.BucketType.user)
+    @commands.command(name="artist", description="Get a link to a random Spotify artist", brief="Random Spotify artist")
+    async def artist(self, ctx):
+        """
+        Get a random Spotify artist and return it to the user
+        """
+        query = self.bot.random_words.get_random_query_strict()
+        headers = form_auth_headers(self.spotify_client_id, self.access_token)
+        query_url = build_url_kwargs(self.search_url, q=query, type='artist', limit='50')
+        response = send_get_request(query_url, headers)
+        status_code = handle_status_code(response)
+        if status_code == 'OK':
+            # call search endpoint again to get a random track
+            if len(response.json()['artists']) != 0:
+                artists = response.json()['artists']['items']
+                choice = random.choice(artists)
+                embed = discord.Embed(title='Random Artist')
+                embed.add_field(name='Artist', value=choice['name'], inline=False)
+                embed.add_field(name='Link', value=choice['external_urls']['spotify'], inline=False)
+                #if len(choice['images']) > 0:
+                    # set thumbnail to first image of artist
+                    #embed.set_thumbnail(url=choice['images'][0]['url'])
+                if len(choice['genres']) > 0:
+                    embed.add_field(name='Genre(s)', value=choice['genres'], inline=False)
+                embed.add_field(name='Popularity', value=choice['popularity'], inline=True)
+                embed.add_field(name='Followers', value=choice['followers']['total'], inline=True)
+                embed.colour = discord.Colour.green()
+                await ctx.send(embed=embed)
+            else:
+                await ctx.send('I had trouble finding an artist')
+        else:
+            await ctx.send('I had trouble finding an artist')
+
+    @commands.cooldown(3, 60, commands.BucketType.user)
+    @commands.command(name="podcast", description="Get a link to a random Spotify podcast",
+                      brief="Random Spotify podcast")
+    async def podcast(self, ctx, market='US'):
+        """
+        Get a random Spotify podcast and return it to the user
+        Non-Explicit only
+        Pass in a custom market for your country. Please use the correct ISO 3166-1 alpha-2 country code
+        """
+        query = self.bot.random_words.get_random_query_strict()
+        headers = form_auth_headers(self.spotify_client_id, self.access_token)
+        query_url = build_url_kwargs(self.search_url, q=query, type='show', market=market)
+        response = send_get_request(query_url, headers)
+        status_code = handle_status_code(response)
+        if status_code == 'OK':
+            # call search endpoint again to get a random track
+            if len(response.json()['shows']) != 0:
+                shows = response.json()['shows']['items']
+                good_shows = []
+                for show in shows:
+                    if show['explicit'] is False:
+                        good_shows.append(show)
+
+                choice = random.choice(good_shows)
+                if len(good_shows) > 0:
+                    embed = discord.Embed(title='Random Podcast')
+                    embed.add_field(name='Podcast', value=choice['name'], inline=False)
+                    embed.add_field(name='Description', value=choice['description'], inline=False)
+                    embed.add_field(name='Episodes', value=choice['total_episodes'], inline=False)
+                    embed.add_field(name='Link', value=choice['external_urls']['spotify'], inline=False)
+                    embed.colour = discord.Colour.green()
+                    await ctx.send(embed=embed)
+                else:
+                    await ctx.send('I had trouble finding a podcast')
+            else:
+                await ctx.send('I had trouble finding a podcast')
+        else:
+            await ctx.send('I had trouble finding a podcast')
 
 
 def setup(bot):

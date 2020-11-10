@@ -137,7 +137,7 @@ class CommonRandomizer(commands.Cog):
             while bullets == 1:
                 await ctx.send('Alright, ' + args[index] + ', you\'re up. ' + str(chamber) + ' shots left.....')
                 time.sleep(1)
-                await ctx.send(monkas + ' :gun:')
+                await ctx.send(monkas)
                 time.sleep(1)
                 result = await self.percent_roll((bullets/chamber)*100)
                 if result:

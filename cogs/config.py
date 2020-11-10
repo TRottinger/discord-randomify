@@ -1,6 +1,3 @@
-import asyncio
-
-import discord
 from discord.ext import commands
 
 
@@ -79,7 +76,6 @@ class Config(commands.Cog):
         Sends the invite link for the bot to the channel
         """
         await ctx.send('To invite the bot to your server, use: https://bit.ly/2JqfTQN')
-
 
 
 def setup(bot):
