@@ -5,7 +5,6 @@ import logging
 from discord.ext import commands, tasks
 from dotenv import load_dotenv
 
-from utils.common_utils import get_random_query
 from utils.url_builder import build_url_kwargs
 from utils.http_helpers import handle_status_code
 from utils.http_helpers import send_get_request
