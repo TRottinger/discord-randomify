@@ -75,7 +75,7 @@ class Config(commands.Cog):
         """
         Sends the invite link for the bot to the channel
         """
-        await ctx.send('To invite the bot to your server, use: https://bit.ly/2JqfTQN')
+        await ctx.send('To invite the bot to your server, use: https://discord.com/oauth2/authorize?client_id=770197604155785216&permissions=11328&scope=bot')
 
 
 def setup(bot):
