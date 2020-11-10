@@ -27,15 +27,10 @@ class Anime(commands.Cog):
         """
         Queries the MAL api with a random word to get an anime
         """
-        query_word = self.bot.random_words.get_random_query()
+        query_word = self.bot.random_words.get_random_query_strict()
         # exclude NFSW categories
         query = query_word + '&gx=1&genre%5B%5D=9&genre%5B%5D=12&genre%5B%5D=33&genre%5B%5D=34'
         search = mal.AnimeSearch(query)
-
-        # Try again with a stricter word
-        if len(search.results == 0):
-            query = query.replace(query_word, self.bot.random_words.get_random_query_strict)
-            search = mal.AnimeSearch(query)
 
         if len(search.results) == 0:
             await ctx.send('I could not find an anime with the given parameters')
@@ -50,15 +45,10 @@ class Anime(commands.Cog):
         """
         Queries the MAL api with a random word to get a manga
         """
-        query_word = self.bot.random_words.get_random_query()
+        query_word = self.bot.random_words.get_random_query_strict()
         # exclude NFSW categories
         query = query_word + '&gx=1&genre%5B%5D=9&genre%5B%5D=12&genre%5B%5D=33&genre%5B%5D=34'
         search = mal.MangaSearch(query)
-
-        # Try again with a stricter word
-        if len(search.results == 0):
-            query = query.replace(query_word, self.bot.random_words.get_random_query_strict)
-            search = mal.MangaSearch(query)
 
         if len(search.results) == 0:
             await ctx.send('I could not find a manga with the given parameters')
