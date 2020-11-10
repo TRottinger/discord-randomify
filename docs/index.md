@@ -76,9 +76,9 @@ Here are some popular commands
 
 Here are some links you can use:
 
-- Invite: [https://bit.ly/2JqfTQN]()
-- Discord: [https://discord.gg/EbZ3QX4]()
-- GitHub: [https://github.com/TRottinger/discord-randomify]()
+- Invite: [Link](https://bit.ly/2JqfTQN)
+- Discord: [Link](https://discord.gg/EbZ3QX4)
+- GitHub: [Link](https://github.com/TRottinger/discord-randomify)
 
 
 ### Support
