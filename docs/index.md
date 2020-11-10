@@ -76,9 +76,9 @@ Here are some popular commands
 
 Here are some links you can use:
 
-- Invite: https://discord.com/oauth2/authorize?client_id=770197604155785216&permissions=11328&scope=bot
-- Discord: https://discord.gg/EbZ3QX4
-- GitHub: https://github.com/TRottinger/discord-randomify
+- Invite: [https://bit.ly/2JqfTQN]()
+- Discord: [https://discord.gg/EbZ3QX4]()
+- GitHub: [https://github.com/TRottinger/discord-randomify]()
 
 
 ### Support
