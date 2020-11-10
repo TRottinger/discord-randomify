@@ -17,6 +17,10 @@ listing](commands)
 Here are some popular commands
 
 ```markdown
+  !rt anime
+    - Responds with a random Anime on MAL
+    - NSFW results are turned off
+
   !rt dndroll               
     - Roll a dnd dice. Format [1-9]d[1-20]
     - Example: !rt dndroll 1d20
@@ -25,15 +29,13 @@ Here are some popular commands
 
   !rt champion
     - Gives a random League of Legends champion
-  
-  !rt summonerspell        
-    - Get a random League summoner spell
-    
-  !rt summonerspellaram  
-    - Get a random League ARAM summoner spell
 
   !rt emoji
     - Responds with a random emoji from the current server
+    
+  !rt manga
+    - Responds with a random Manga on MAL
+    - NSFW results are turned off
   
   !rt repeat 
     - Repeats your last run commands with the same arguments
@@ -43,6 +45,11 @@ Here are some popular commands
 
   !rt reddit 
     - Gives you a random subreddit!
+    - By default, this is SFW
+    
+  !rt song
+    - Gives you a random song on Spotify
+    - Explicit songs turned off for now to ensure SFW
 
   !rt twitch
     - Gives a link to a random twitch streamer who is currently live.
@@ -56,13 +63,22 @@ Here are some popular commands
 
   !rt wiki
     - Gives you a random Wikipedia article
+    - Returns text only + link to keep SFW
 
   !rt youtube               
     - Get a random youtube video link.
     - This will become more random as more people use it!
     - (So invite your friends) :)
+    - Safe search is set to strict for SFW purposes
 ```
 
+### Links
+
+Here are some links you can use:
+
+- Invite: [Link](https://bit.ly/2JqfTQN)
+- Discord: [Link](https://discord.gg/EbZ3QX4)
+- GitHub: [Link](https://github.com/TRottinger/discord-randomify)
 
 
 ### Support

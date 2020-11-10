@@ -2,8 +2,6 @@ import os
 
 from discord.ext import commands
 import random
-from urllib.request import Request
-import urllib.error
 
 from dotenv import load_dotenv
 
@@ -106,6 +104,14 @@ class MiscFunctions(commands.Cog):
             result = 'Sorry, I had trouble finding a cat'
 
         await ctx.send(str(result))
+
+    @commands.command(name='query', description='Get a random query word', brief='Random query word')
+    async def query(self, ctx):
+        """
+        Gets a random query and outputs it
+        """
+        choice = self.bot.random_words.get_random_query()
+        await ctx.send(ctx.author.mention + ' you got: ' + choice)
 
 
 def setup(bot):

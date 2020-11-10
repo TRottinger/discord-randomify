@@ -27,6 +27,7 @@ class Wiki(commands.Cog):
         embed.add_field(name=info.original_title, value=info.url, inline=False)
         embed.add_field(name='Summary', value=info.summary, inline=False)
         embed.set_footer(text='Images hidden for SFW purposes')
+        embed.colour = discord.Colour.orange()
         await ctx.send(embed=embed)
 
 

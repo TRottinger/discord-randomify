@@ -36,7 +36,7 @@ class YouTube(commands.Cog):
         The bot is rate limited because Google is really anal with their limits
         :return:
         """
-        random_query_word = get_random_query()
+        random_query_word = self.bot.random_words.get_random_query()
         print(random_query_word)
         headers = {
             'Accept': 'application/json'

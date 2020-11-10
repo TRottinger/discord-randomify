@@ -17,5 +17,6 @@ you can give the command a parameter.
 | emoji   | Random emoji from the current guild | Guild only                               |
 | dog     | Returns a random dog                | Cutest command we have                   |
 | cat     | Returns a random cat                | Just kidding, this is the cutest command |
+| query   | Returns a random query string       |                                          |
 
 [Return to Commands](../commands.md)
