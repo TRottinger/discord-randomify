@@ -3,7 +3,6 @@ import random
 import logging
 
 import discord
-import requests
 from discord.ext import commands, tasks
 from dotenv import load_dotenv
 
@@ -22,11 +21,14 @@ SPOTIFY_QUERY_RATE_PER_HOUR = 8
 
 class Spotify(commands.Cog):
     """
-    Main YouTube cog Class
+    Main Spotify cog Class
     """
 
     def __init__(self, bot):
         self.bot = bot
+
+        log.info('Loading Spotify cog')
+
         self.songs = []
         self.queries_this_hour = 0
         self.search_url = 'https://api.spotify.com/v1/search'
@@ -38,6 +40,10 @@ class Spotify(commands.Cog):
         self.access_token = get_access_token(self.spotify_client_id, self.spotify_client_secret,
                                              'https://accounts.spotify.com/api/token')
 
+        self.populate_on_ready_from_db()
+        self.reset_auth_code.start()
+        self.reset_count.start()
+
     async def request_new_songs(self):
         """
         Requests new songs from the Spotify database and stores them
@@ -46,7 +52,6 @@ class Spotify(commands.Cog):
         :return:
         """
         random_query_word = self.bot.random_words.get_random_query_strict()
-        print(random_query_word)
         headers = form_auth_headers(self.spotify_client_id, self.access_token)
         query_url = build_url_kwargs(self.search_url, q=random_query_word, limit='50', type='track')
         response = send_get_request(query_url, headers=headers)
@@ -66,23 +71,16 @@ class Spotify(commands.Cog):
             log.warning('Received response code: ' + str(status_code))
         self.queries_this_hour += 1
 
-    async def populate_on_ready_from_db(self):
+    def populate_on_ready_from_db(self):
         """
         Loads in videos from MongoDB
         :return:
         """
         self.songs = [link for link in self.db_songs_table.find()]
 
-    @commands.Cog.listener()
-    async def on_ready(self):
-        """
-        Populates from DB on bot start up
-        :return:
-        """
-        log.info('Loading Spotify cog')
-        await self.populate_on_ready_from_db()
-        await self.reset_count.start()
-        await self.reset_auth_code.start()
+    def cog_unload(self):
+        self.reset_count.cancel()
+        self.reset_auth_code.cancel()
 
     @tasks.loop(minutes=60)
     async def reset_count(self):
@@ -90,7 +88,7 @@ class Spotify(commands.Cog):
         Resets the manually set rate limit every hour
         :return:
         """
-        log.info("Preparing to reset count")
+        log.info("Preparing to reset query wait for Spotify")
         while self.queries_this_hour < SPOTIFY_QUERY_RATE_PER_HOUR:
             await self.request_new_songs()
         self.queries_this_hour = 0
@@ -98,6 +96,7 @@ class Spotify(commands.Cog):
     # auth code expires every 60 minutes.. so lets refresh it
     @tasks.loop(minutes=55)
     async def reset_auth_code(self):
+        log.info("Preparing to refresh access token for Spotify")
         self.access_token = get_access_token(self.spotify_client_id, self.spotify_client_secret,
                                              'https://accounts.spotify.com/api/token')
 
