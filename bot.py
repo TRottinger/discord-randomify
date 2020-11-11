@@ -86,12 +86,12 @@ class CustomHelpCommand(commands.DefaultHelpCommand):
             embed.set_thumbnail(url=self.context.bot.user.avatar_url)
             embed.description = '''
             Thank you for using Randomify, the bot for all your random needs!
-            List of commands available for Randomify
             For a more user-friendly list of help commands, visit: 
             https://trottinger.github.io/discord-randomify/commands
             
             All commands can be invoked with !rt <command>.
             To set a custom prefix, try: !rt help prefix
+            This message will delete after 60 seconds of inactivity
             
             Page {page}/{pages}
             '''.format(page=str(i + 1), pages=str(pages))

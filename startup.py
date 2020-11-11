@@ -1,8 +1,14 @@
+import os
+
 import discord
+from dotenv import load_dotenv
 
 from bot import Bot
 
 import logging
+
+load_dotenv()
+TESTING = os.getenv('testing')
 
 
 logging.basicConfig(filename='info.log', filemode='w', level=logging.INFO)
@@ -29,7 +35,10 @@ def startup():
               owner_id=owner_id,
               command_prefix=_guild_prefix)
     log.info("Loading extensions")
-    bot.setup_extensions()
+    if TESTING is False:
+        bot.setup_extensions()
+    else:
+        bot.load_extension('cogs.admin')
     log.info("Running bot")
     bot.startup()
 

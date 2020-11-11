@@ -26,16 +26,13 @@ class Twitch(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.twitch_helpers = twitch_helpers.TwitchHelpers()
-
-    @commands.Cog.listener()
-    async def on_ready(self):
-        """
-        Populates from DB on bot start up
-        :return:
-        """
         log.info('Loading Twitch cog')
-        await self.clear_cache_task.start()
-        await self.reset_auth_code.start()
+        self.clear_cache_task.start()
+        self.reset_auth_code.start()
+
+    def cog_unload(self):
+        self.clear_cache_task.cancel()
+        self.reset_auth_code.cancel()
 
     @tasks.loop(minutes=10)
     async def clear_cache_task(self):

@@ -57,6 +57,31 @@ class Admin(commands.Cog):
 
     @commands.is_owner()
     @commands.command(hidden=True)
+    async def load_all_extensions(self, ctx):
+        """
+        Load extensions
+        """
+        try:
+            self.bot.setup_extensions()
+        except commands.ExtensionAlreadyLoaded:
+            pass
+
+    @commands.is_owner()
+    @commands.command(hidden=True)
+    async def unload_all_extensions(self, ctx):
+        """
+        Unload extensions
+        """
+        try:
+            extensions = self.bot.extensions
+            extensions.remove('cogs.admin')
+            for extension in extensions:
+                self.bot.unload_extension(extension)
+        except commands.ExtensionError:
+            pass
+
+    @commands.is_owner()
+    @commands.command(hidden=True)
     async def get_guilds(self, ctx):
         """
         Get all the guilds that the bot is in
