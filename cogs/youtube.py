@@ -27,6 +27,9 @@ class YouTube(commands.Cog):
         self.videos_url = 'https://youtube.googleapis.com/youtube/v3/search'
         self.db_youtube = self.bot.db_client.get_database('YouTube')
         self.db_links_table = self.db_youtube.YoutubeLinks
+        log.info('Loading YouTube cog')
+        self.populate_on_ready_from_db()
+        self.reset_count.start()
 
     async def request_new_videos(self):
         """
@@ -57,22 +60,15 @@ class YouTube(commands.Cog):
             log.warning('Received response code: ' + str(status_code))
         self.queries_this_hour += 1
 
-    async def populate_on_ready_from_db(self):
+    def cog_unload(self):
+        self.reset_count.cancel()
+
+    def populate_on_ready_from_db(self):
         """
         Loads in videos from MongoDB
         :return:
         """
         self.videos = [link for link in self.db_links_table.find()]
-
-    @commands.Cog.listener()
-    async def on_ready(self):
-        """
-        Populates from DB on bot start up
-        :return:
-        """
-        log.info('Loading YouTube cog')
-        await self.populate_on_ready_from_db()
-        await self.reset_count.start()
 
     @tasks.loop(minutes=60)
     async def reset_count(self):
