@@ -35,7 +35,7 @@ def startup():
               owner_id=owner_id,
               command_prefix=_guild_prefix)
     log.info("Loading extensions")
-    if TESTING is False:
+    if TESTING == 'False':
         bot.setup_extensions()
     else:
         bot.load_extension('cogs.admin')
