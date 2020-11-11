@@ -1,9 +1,17 @@
+import logging
+
 from discord.ext import commands
+
+log = logging.getLogger(__name__)
 
 
 class Admin(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+
+    @commands.Cog.listener()
+    async def on_ready(self):
+        log.info('Loading Admin cog')
 
     @commands.is_owner()
     @commands.command(hidden=True)

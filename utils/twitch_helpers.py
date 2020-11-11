@@ -128,13 +128,17 @@ class TwitchHelpers:
 
         return streamers
 
-    def get_streamer(self, game_id):
+    def get_streamer(self, game_id, cache=False):
         """
         Selects a random streamer and returns information about that
+        :param cache:
         :param game_id:
         :return: streamer
         """
-        streamers = self.get_twitch_streams(game_id)
+        if cache is True:
+            streamers = self.local_stream_cache
+        else:
+            streamers = self.get_twitch_streams(game_id)
 
         if streamers is None:
             my_streamer = None

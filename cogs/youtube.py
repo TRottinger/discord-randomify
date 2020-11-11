@@ -80,18 +80,10 @@ class YouTube(commands.Cog):
         Resets the manually set rate limit every hour
         :return:
         """
-        self.queries_this_hour = 0
-
-    @reset_count.before_loop
-    async def before_reset_count(self):
-        """
-        Does some stuff before resetting the count. Might as well use our hourly rate if it wasn't met
-        :return:
-        """
         log.info("Preparing to reset count")
         while self.queries_this_hour < YOUTUBE_SEARCH_LIMIT_PER_HOUR:
             await self.request_new_videos()
-        await self.bot.wait_until_ready()
+        self.queries_this_hour = 0
 
     @commands.command(name="youtube", description="Get a link to a random youtube video", aliases=["ytube", "yt"],
                       brief="Get a random youtube video")

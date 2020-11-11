@@ -3,6 +3,10 @@ import time
 
 from discord.ext import commands
 
+import logging
+
+log = logging.getLogger(__name__)
+
 
 class CommonRandomizer(commands.Cog):
     """
@@ -11,6 +15,10 @@ class CommonRandomizer(commands.Cog):
     """
     def __init__(self, bot):
         self.bot = bot
+
+    @commands.Cog.listener()
+    async def on_ready(self):
+        log.info('Loading Common Randomizers cog')
 
     async def percent_roll(self, percent):
         """

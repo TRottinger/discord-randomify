@@ -1,11 +1,12 @@
+import logging
 import os
 
 from discord.ext import commands
 import random
-
 from dotenv import load_dotenv
-
 from utils import http_helpers
+
+log = logging.getLogger(__name__)
 
 
 class MiscFunctions(commands.Cog):
@@ -13,6 +14,10 @@ class MiscFunctions(commands.Cog):
         self.bot = bot
         load_dotenv()
         self.cat_api_key = os.getenv('CAT_API_KEY')
+
+    @commands.Cog.listener()
+    async def on_ready(self):
+        log.info('Loading Miscellaneous cog')
 
     @commands.command(name='repeat', description='Repeat your last run command')
     async def repeat(self, ctx):
