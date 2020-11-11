@@ -34,6 +34,10 @@ class TwitchHelpers:
                                                           'https://id.twitch.tv/oauth2/token')
         self.local_stream_cache = []
 
+    async def refresh_access_token(self):
+        self.access_token = http_helpers.get_access_token(self.client_id, self.client_secret,
+                                                          'https://id.twitch.tv/oauth2/token')
+
     def clear_local_cache(self):
         self.local_stream_cache.clear()
 

@@ -3,6 +3,8 @@ from discord.ext import commands, tasks
 from utils import twitch_helpers
 import random
 
+from utils.http_helpers import get_access_token
+
 log = logging.getLogger(__name__)
 
 
@@ -33,6 +35,7 @@ class Twitch(commands.Cog):
         """
         log.info('Loading Twitch cog')
         await self.clear_cache_task.start()
+        await self.reset_auth_code.start()
 
     @tasks.loop(minutes=10)
     async def clear_cache_task(self):
@@ -41,6 +44,10 @@ class Twitch(commands.Cog):
         :return:
         """
         self.twitch_helpers.clear_local_cache()
+
+    @tasks.loop(hours=24)
+    async def reset_auth_code(self):
+        await self.twitch_helpers.refresh_access_token()
 
     # Twitch is the only API we use that could get overloaded
     # All of the others have manually set rate limits

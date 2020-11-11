@@ -60,7 +60,6 @@ def get_access_token(client_id, client_secret, url):
         'grant_type': 'client_credentials'
     }
     response = requests.post(url, data=headers)
-
     access_token = response.json()['access_token']
     if access_token == '':
         log.warning('Bad access token')
