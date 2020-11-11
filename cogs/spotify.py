@@ -3,6 +3,7 @@ import random
 import logging
 
 import discord
+import requests
 from discord.ext import commands, tasks
 from dotenv import load_dotenv
 
@@ -12,7 +13,8 @@ from utils.http_helpers import send_get_request
 
 log = logging.getLogger(__name__)
 
-SPOTIFY_QUERY_RATE_PER_HOUR = 5
+SPOTIFY_QUERY_RATE_PER_HOUR = 8
+
 
 # This class is very similar to the YouTube class
 # I should look into combining them into a "media" class
@@ -22,6 +24,7 @@ class Spotify(commands.Cog):
     """
     Main YouTube cog Class
     """
+
     def __init__(self, bot):
         self.bot = bot
         self.songs = []
@@ -79,6 +82,7 @@ class Spotify(commands.Cog):
         log.info('Loading Spotify cog')
         await self.populate_on_ready_from_db()
         await self.reset_count.start()
+        await self.reset_auth_code.start()
 
     @tasks.loop(minutes=60)
     async def reset_count(self):
@@ -90,6 +94,12 @@ class Spotify(commands.Cog):
         while self.queries_this_hour < SPOTIFY_QUERY_RATE_PER_HOUR:
             await self.request_new_songs()
         self.queries_this_hour = 0
+
+    # auth code expires every 60 minutes.. so lets refresh it
+    @tasks.loop(minutes=55)
+    async def reset_auth_code(self):
+        self.access_token = get_access_token(self.spotify_client_id, self.spotify_client_secret,
+                                             'https://accounts.spotify.com/api/token')
 
     @commands.command(name="song", description="Get a link to a random Spotify song", aliases=["spotify"],
                       brief="Get a random Spotify song")
