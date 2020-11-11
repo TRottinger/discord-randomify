@@ -2,10 +2,18 @@ from discord.ext import commands
 from urllib.request import Request
 import urllib.error
 
+import logging
+
+log = logging.getLogger(__name__)
+
 
 class Reddit(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+
+    @commands.Cog.listener()
+    async def on_ready(self):
+        log.info('Loading Reddit cog')
 
     @commands.command(name="reddit", description="Get a link to a random subreddit", brief="Get a random subreddit",
                       aliases=["subreddit"])

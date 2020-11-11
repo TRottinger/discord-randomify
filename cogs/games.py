@@ -4,6 +4,10 @@ import random
 from discord.ext import commands
 from dotenv import load_dotenv
 
+import logging
+
+log = logging.getLogger(__name__)
+
 from utils.http_helpers import get_access_token, form_auth_headers, send_get_request, handle_status_code
 
 
@@ -205,6 +209,10 @@ class Games(commands.Cog):
         self.bot = bot
         self.league_handler = LeagueOfLegends()
         self.wow_handler = WorldOfWarcraft()
+
+    @commands.Cog.listener()
+    async def on_ready(self):
+        log.info('Loading Games cog')
 
     # League of Legends commands
 

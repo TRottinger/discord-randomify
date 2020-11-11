@@ -22,6 +22,10 @@ class Anime(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    @commands.Cog.listener()
+    async def on_ready(self):
+        log.info('Loading Anime cog')
+
     @commands.command(name="anime", description="Get a random anime", brief="Get a random anime. SFW")
     async def anime(self, ctx):
         """

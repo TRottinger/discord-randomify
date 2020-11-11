@@ -1,9 +1,17 @@
 from discord.ext import commands
 
+import logging
+
+log = logging.getLogger(__name__)
+
 
 class Config(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+
+    @commands.Cog.listener()
+    async def on_ready(self):
+        log.info('Loading Configuration cog')
 
     @commands.command(hidden=True)
     async def ping(self, ctx):

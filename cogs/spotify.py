@@ -12,7 +12,7 @@ from utils.http_helpers import send_get_request
 
 log = logging.getLogger(__name__)
 
-SPOTIFY_QUERY_RATE_PER_HOUR = 10
+SPOTIFY_QUERY_RATE_PER_HOUR = 5
 
 # This class is very similar to the YouTube class
 # I should look into combining them into a "media" class
@@ -86,18 +86,10 @@ class Spotify(commands.Cog):
         Resets the manually set rate limit every hour
         :return:
         """
-        self.queries_this_hour = 0
-
-    @reset_count.before_loop
-    async def before_reset_count(self):
-        """
-        Does some stuff before resetting the count. Might as well use our hourly rate if it wasn't met
-        :return:
-        """
         log.info("Preparing to reset count")
         while self.queries_this_hour < SPOTIFY_QUERY_RATE_PER_HOUR:
             await self.request_new_songs()
-        await self.bot.wait_until_ready()
+        self.queries_this_hour = 0
 
     @commands.command(name="song", description="Get a link to a random Spotify song", aliases=["spotify"],
                       brief="Get a random Spotify song")
@@ -132,9 +124,6 @@ class Spotify(commands.Cog):
                 embed = discord.Embed(title='Random Artist')
                 embed.add_field(name='Artist', value=choice['name'], inline=False)
                 embed.add_field(name='Link', value=choice['external_urls']['spotify'], inline=False)
-                #if len(choice['images']) > 0:
-                    # set thumbnail to first image of artist
-                    #embed.set_thumbnail(url=choice['images'][0]['url'])
                 if len(choice['genres']) > 0:
                     embed.add_field(name='Genre(s)', value=choice['genres'], inline=False)
                 embed.add_field(name='Popularity', value=choice['popularity'], inline=True)
@@ -142,8 +131,11 @@ class Spotify(commands.Cog):
                 embed.colour = discord.Colour.green()
                 await ctx.send(embed=embed)
             else:
+                log.warning('Had trouble and got no artists back')
+                log.warning('Return: ' + str(response.json()))
                 await ctx.send('I had trouble finding an artist')
         else:
+            log.warning('Had trouble and got status code: ' + str(status_code))
             await ctx.send('I had trouble finding an artist')
 
     @commands.cooldown(3, 60, commands.BucketType.user)
@@ -179,10 +171,14 @@ class Spotify(commands.Cog):
                     embed.colour = discord.Colour.green()
                     await ctx.send(embed=embed)
                 else:
+                    log.warning('No good shows. Must have gotten a bad word')
                     await ctx.send('I had trouble finding a podcast')
             else:
+                log.warning('Had trouble and got no shows back')
+                log.warning('Return: ' + str(response.json()))
                 await ctx.send('I had trouble finding a podcast')
         else:
+            log.warning('Had trouble and got status code: ' + str(status_code))
             await ctx.send('I had trouble finding a podcast')
 
 
