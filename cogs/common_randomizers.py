@@ -112,6 +112,32 @@ class CommonRandomizer(commands.Cog):
             result = random.choice(args)
             await ctx.send(author + ' ' + str(result) + '')
 
+    # @commands.command(name="dramaticchoose", description="Choose between a list of things.. dramatically",
+    #                  brief="Choose one from list. Space separated input. Example: dramaticchoose red blue green",
+    #                  usage="<value1> <value2> ... [valueN]")
+    # async def dramaticchoose(self, ctx, *args):
+    #    """
+    #    Chooses between a list of arguments randomly, then outputs to author
+    #    Any number of arguments can be passed, but there must be at least 2
+    #    Arguments are separated by spaces
+    #    Example: choose red blue yellow
+    #    """
+    #    choices = [arg for arg in args]
+    #    if len(args) < 2:
+    #        await ctx.send('Please provide enough arguments')
+    #    elif len(args) > 10:
+    #        await ctx.send('That would take too long....')
+    #    else:
+    #        length = len(args)
+    #        for i in range(0, length-1):
+    #            await ctx.send('Removing one option from: ' + ', '.join(choices))
+    #            result = random.choice(args)
+    #            choices.remove(result)
+    #            time.sleep(1)
+    #            await ctx.send('Removed ' + str(result) + '!')
+    #            time.sleep(1)
+    #        await ctx.send('And the winner is: ' + ' '.join(choices))
+
     @commands.command(name="russianroulette", description="Like choose but with russian roulette",
                       brief="Classic Russian roulette. Example: russianroulette jane john",
                       usage="<value1> <value2> ... [value6]")
