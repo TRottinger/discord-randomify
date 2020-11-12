@@ -30,7 +30,7 @@ class Spotify(commands.Cog):
         log.info('Loading Spotify cog')
 
         self.songs = []
-        #initialize to max so that we don't run it on init
+        # initialize to max so that we don't run it on init
         self.queries_this_hour = SPOTIFY_QUERY_RATE_PER_HOUR
         self.search_url = 'https://api.spotify.com/v1/search'
         self.db_spotify = self.bot.db_client.get_database('Spotify')
