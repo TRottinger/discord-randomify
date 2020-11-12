@@ -60,9 +60,12 @@ class Twitch(commands.Cog):
         games, weighted_id_game_selector = self.twitch_helpers.get_twitch_games()
         if games is None or weighted_id_game_selector is None:
             log.warning('Trouble getting random game')
-            await ctx.send('I had trouble processing the request. Selecting stream from cache')
-            streamer = self.twitch_helpers.get_streamer(game_id=0, cache=True)
-            game_name_picked = None
+            if len(self.twitch_helpers.local_stream_cache) == 0:
+                await ctx.send('I had trouble processing the request')
+                return
+            else:
+                streamer = self.twitch_helpers.get_streamer(game_id=0, cache=True)
+                game_name_picked = None
         else:
             game_id_picked = random.choice(weighted_id_game_selector)
             game_name_picked = str(games.get(game_id_picked))
@@ -97,9 +100,13 @@ class Twitch(commands.Cog):
         author = ctx.author.mention
         if game_id_picked is None:
             log.warning('Trouble getting game')
-            await ctx.send('I did not find the game ' + game_name_picked + '. Selecting from cache')
-            streamer = self.twitch_helpers.get_streamer(game_id=0, cache=True)
-            game_name_picked = None
+            if len(self.twitch_helpers.local_stream_cache) == 0:
+                await ctx.send('I had trouble finding the game ' + game_name_picked)
+                return
+            else:
+                await ctx.send('I had trouble processing the request. Selecting from cache')
+                streamer = self.twitch_helpers.get_streamer(game_id=0, cache=True)
+                game_name_picked = None
         else:
             streamer = self.twitch_helpers.get_streamer(game_id_picked)
         if streamer is None:

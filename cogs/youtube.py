@@ -23,7 +23,8 @@ class YouTube(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.videos = []
-        self.queries_this_hour = 0
+        # init to max so we don't run on start up
+        self.queries_this_hour = YOUTUBE_SEARCH_LIMIT_PER_HOUR
         self.videos_url = 'https://youtube.googleapis.com/youtube/v3/search'
         self.db_youtube = self.bot.db_client.get_database('YouTube')
         self.db_links_table = self.db_youtube.YoutubeLinks
