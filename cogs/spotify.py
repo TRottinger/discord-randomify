@@ -16,6 +16,8 @@ log = logging.getLogger(__name__)
 
 SPOTIFY_QUERY_RATE_PER_HOUR = 5
 
+CACHE_MINUTES = 60
+
 
 # This class is very similar to the YouTube class
 # I should look into combining them into a "media" class
@@ -43,8 +45,8 @@ class Spotify(commands.Cog):
         self.access_token = get_access_token(self.spotify_client_id, self.spotify_client_secret,
                                              'https://accounts.spotify.com/api/token')
 
-        self.artist_cache = ExpiringDict(max_len=5000, max_age_seconds=None)
-        self.podcast_cache = ExpiringDict(max_len=5000, max_age_seconds=None)
+        self.artist_cache = ExpiringDict(max_len=5000, max_age_seconds=60*CACHE_MINUTES)
+        self.podcast_cache = ExpiringDict(max_len=5000, max_age_seconds=60*CACHE_MINUTES)
         # Initialize functions and tasks
 
         self.populate_on_ready_from_db()
@@ -203,6 +205,7 @@ class Spotify(commands.Cog):
             if len(response.json()['shows']) != 0:
                 shows = response.json()['shows']['items']
                 good_shows = []
+
                 for show in shows:
                     if show['explicit'] is False:
                         good_shows.append(show)
