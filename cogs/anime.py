@@ -1,12 +1,14 @@
-
+from expiringdict import ExpiringDict
 import logging
 import random
 
 import discord
-from discord.ext import commands, tasks
+from discord.ext import commands
 import mal
 
 log = logging.getLogger(__name__)
+
+CACHE_MINUTES = 30
 
 
 async def populate_embed(choice, embed):
@@ -21,10 +23,20 @@ async def populate_embed(choice, embed):
 class Anime(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.anime_cache = ExpiringDict(max_len=5000, max_age_seconds=60*CACHE_MINUTES)
+        self.manga_cache = ExpiringDict(max_len=5000, max_age_seconds=60*CACHE_MINUTES)
 
     @commands.Cog.listener()
     async def on_ready(self):
         log.info('Loading Anime cog')
+
+    async def cache_anime(self, items):
+        for item in items:
+            self.anime_cache[item.mal_id] = item
+
+    async def cache_manga(self, items):
+        for item in items:
+            self.manga_cache[item.mal_id] = item
 
     @commands.command(name="anime", description="Get a random anime", brief="Get a random anime. SFW")
     async def anime(self, ctx):
@@ -37,10 +49,18 @@ class Anime(commands.Cog):
         search = mal.AnimeSearch(query)
 
         if len(search.results) == 0:
-            await ctx.send('I could not find an anime with the given parameters')
+            if len(self.anime_cache) > 0:
+                choice = random.choice(list(self.anime_cache.values()))
+            else:
+                choice = None
+        else:
+            choice = random.choice(search.results)
+
+        if choice is None:
+            await ctx.send('I had trouble processing the request')
         else:
             embed = discord.Embed(title='Random Anime')
-            choice = random.choice(search.results)
+            await self.cache_anime(search.results)
             output_embed = await populate_embed(choice, embed)
             await ctx.send(embed=output_embed)
 
@@ -55,10 +75,18 @@ class Anime(commands.Cog):
         search = mal.MangaSearch(query)
 
         if len(search.results) == 0:
-            await ctx.send('I could not find a manga with the given parameters')
+            if len(self.manga_cache) > 0:
+                choice = random.choice(list(self.manga_cache.values()))
+            else:
+                choice = None
+        else:
+            choice = random.choice(search.results)
+
+        if choice is None:
+            await ctx.send('I had trouble processing the request')
         else:
             embed = discord.Embed(title='Random Manga')
-            choice = random.choice(search.results)
+            await self.cache_manga(search.results)
             output_embed = await populate_embed(choice, embed)
             await ctx.send(embed=output_embed)
 

@@ -27,20 +27,10 @@ class Twitch(commands.Cog):
         self.bot = bot
         self.twitch_helpers = twitch_helpers.TwitchHelpers()
         log.info('Loading Twitch cog')
-        self.clear_cache_task.start()
         self.reset_auth_code.start()
 
     def cog_unload(self):
-        self.clear_cache_task.cancel()
         self.reset_auth_code.cancel()
-
-    @tasks.loop(minutes=10)
-    async def clear_cache_task(self):
-        """
-        Resets the cache every 10 minutes to clear offline streams.
-        :return:
-        """
-        self.twitch_helpers.clear_local_cache()
 
     @tasks.loop(hours=24)
     async def reset_auth_code(self):
@@ -65,6 +55,11 @@ class Twitch(commands.Cog):
                 return
             else:
                 streamer = self.twitch_helpers.get_streamer(game_id=0, cache=True)
+                if streamer is None:
+                    await ctx.send('I had trouble processing the request')
+                    return
+                else:
+                    await ctx.send('I had trouble processing the request. Selecting from cache')
                 game_name_picked = None
         else:
             game_id_picked = random.choice(weighted_id_game_selector)
@@ -104,8 +99,12 @@ class Twitch(commands.Cog):
                 await ctx.send('I had trouble finding the game ' + game_name_picked)
                 return
             else:
-                await ctx.send('I had trouble processing the request. Selecting from cache')
                 streamer = self.twitch_helpers.get_streamer(game_id=0, cache=True)
+                if streamer is None:
+                    await ctx.send('I had trouble processing the request')
+                    return
+                else:
+                    await ctx.send('I had trouble processing the request. Selecting from cache')
                 game_name_picked = None
         else:
             streamer = self.twitch_helpers.get_streamer(game_id_picked)
