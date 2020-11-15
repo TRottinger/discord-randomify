@@ -18,8 +18,6 @@ you can give the command a parameter.
 | roll \<number\>                            | Roll from 1 to \<number\>. Returns value of the roll                                            | defaults to 100             |
 | dndroll \<1-9\>d\<1-20\>                   | Rolls some DnD dice! First argument is # of dice and second is # of sides. Example: dndroll 2d6 | defaults to 1d20            |
 | choose \<item1\> \<item2\> ..... \<itemN\> | Chooses between the item listed. Separated by spaces                                            | Use quotes for longer items |
-| russianroulette \<item1\> \<item2\> ...    | Circular Russian roulette. Works best with 2-3 people.                                          |                             |
-|                                            |                                                                                                 |                             |
 
 
 

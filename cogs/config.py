@@ -23,6 +23,7 @@ class Config(commands.Cog):
     @commands.command(name='prefix', description='Set the prefix for this guild',
                       brief='Set prefix for invocation. Example prefix ~', aliases=['prefix_set'])
     @commands.guild_only()
+    @commands.has_permissions(manage_guild=True)
     async def prefix(self, ctx, prefix):
         """
         Set the prefix for the guild
@@ -30,8 +31,8 @@ class Config(commands.Cog):
         The prefix is saved between bot instances
         Example: !rt prefix ~ to set the prefix to ~
         """
-        ret = await self.bot.set_guild_prefix(ctx.guild.id, prefix)
-        if ret == '':
+        result = await self.bot.set_guild_prefix(ctx.guild.id, prefix)
+        if result is True:
             await ctx.send('The prefix has been set to ' + str(prefix))
         else:
             await ctx.send('Invalid prefix. Sorry :(')

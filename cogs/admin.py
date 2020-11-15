@@ -25,7 +25,7 @@ class Admin(commands.Cog):
         try:
             self.bot.load_extension(extension)
         except commands.ExtensionError as e:
-            await ctx.send('Invalid extension')
+            await ctx.send('Invalid extension. Error: ' + str(e))
 
     @commands.is_owner()
     @commands.command(hidden=True)
@@ -38,7 +38,7 @@ class Admin(commands.Cog):
         """
         try:
             self.bot.reload_extension(extension)
-        except commands.ExtensionError as e:
+        except commands.ExtensionError:
             await ctx.send('Invalid extension')
 
     @commands.is_owner()
@@ -52,7 +52,7 @@ class Admin(commands.Cog):
         """
         try:
             self.bot.unload_extension(extension)
-        except commands.ExtensionError as e:
+        except commands.ExtensionError:
             await ctx.send('Invalid extension')
 
     @commands.is_owner()
