@@ -138,55 +138,6 @@ class CommonRandomizer(commands.Cog):
     #            time.sleep(1)
     #        await ctx.send('And the winner is: ' + ' '.join(choices))
 
-    @commands.command(name="russianroulette", description="Like choose but with russian roulette",
-                      brief="Classic Russian roulette. Example: russianroulette jane john",
-                      usage="<value1> <value2> ... [value6]")
-    async def russianroulette(self, ctx, *args):
-        """
-        A fun little game of Russian Roulette
-        It is not recommended to play this with more than 3 people
-        Rotates around in a circle taking shots
-        If there is a bullet in the chamber at the time of the shot, that person is shot and the game ends
-        Else, the game keeps going
-        The bot is very talkative with this commands
-        """
-        author = ctx.author.mention
-        bullets = 1
-        chamber = 6
-        emojis = self.bot.emojis
-        monkas = None
-        for emoji in emojis:
-            if emoji.name == 'monkaS':
-                monkas = str(emoji)
-                break
-        if monkas is None:
-            monkas = ':person_bald:'
-
-        if len(args) < 2:
-            await ctx.send(author + ' please provide enough arguments')
-        else:
-            random.shuffle(list(args))
-            rotate = len(args) - 1
-            index = 0
-            while bullets == 1:
-                await ctx.send('Alright, ' + args[index] + ', you\'re up. ' + str(chamber) + ' shots left.....')
-                time.sleep(1)
-                await ctx.send(monkas)
-                time.sleep(1)
-                result = await self.percent_roll((bullets/chamber)*100)
-                if result:
-                    await ctx.send(':boom:')
-                    await ctx.send('Sorry ' + args[index] + ', you lost!')
-                    break
-                else:
-                    await ctx.send(args[index] + ' you are OK')
-                    chamber -= 1
-                    if index == rotate:
-                        index = 0
-                    else:
-                        index += 1
-                    time.sleep(2)
-
 
 def setup(bot):
     bot.add_cog(CommonRandomizer(bot))

@@ -8,8 +8,6 @@ import mal
 
 log = logging.getLogger(__name__)
 
-CACHE_MINUTES = 30
-
 
 async def populate_embed(choice, embed):
     embed.add_field(name='Title', value=str(choice.title), inline=True)
@@ -23,8 +21,8 @@ async def populate_embed(choice, embed):
 class Anime(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.anime_cache = ExpiringDict(max_len=5000, max_age_seconds=60*CACHE_MINUTES)
-        self.manga_cache = ExpiringDict(max_len=5000, max_age_seconds=60*CACHE_MINUTES)
+        self.anime_cache = ExpiringDict(max_len=5000, max_age_seconds=None)
+        self.manga_cache = ExpiringDict(max_len=5000, max_age_seconds=None)
 
     @commands.Cog.listener()
     async def on_ready(self):
