@@ -1,6 +1,7 @@
 import os
 import random
 import logging
+import asyncio
 
 import discord
 from discord.ext import commands, tasks
@@ -12,7 +13,7 @@ from utils.http_helpers import send_get_request
 
 log = logging.getLogger(__name__)
 
-SPOTIFY_QUERY_RATE_PER_HOUR = 8
+SPOTIFY_QUERY_RATE_PER_HOUR = 5
 
 
 # This class is very similar to the YouTube class
@@ -57,6 +58,9 @@ class Spotify(commands.Cog):
         query_url = build_url_kwargs(self.search_url, q=random_query_word, limit='50', type='track')
         response = send_get_request(query_url, headers=headers)
         status_code = handle_status_code(response)
+
+        new_items = []
+
         if status_code == 'OK':
             for track in response.json()['tracks']['items']:
                 url = track['external_urls']['spotify']
@@ -66,10 +70,19 @@ class Spotify(commands.Cog):
                 }
                 # only add SFW tracks
                 if track['explicit'] is False:
-                    self.songs.append(item)
-                    self.db_songs_table.insert_one(item)
+                    # self.songs.append(item)
+                    # self.db_songs_table.insert_one(item)
+                    new_items.append(item)
         else:
             log.warning('Received response code: ' + str(status_code))
+
+        # I know it looks very weird that we are appending to a list
+        # then extending our two existing data structures.
+        # I was blocking the heartbeat if I didn't do it this way
+        # This is bad for memory, but better for time, because we avoid
+        # db_songs_table.insert_one() for every new song
+        self.songs.extend(new_items)
+        self.db_songs_table.insert_many(new_items)
         self.queries_this_hour += 1
 
     def populate_on_ready_from_db(self):
@@ -83,6 +96,14 @@ class Spotify(commands.Cog):
         self.reset_count.cancel()
         self.reset_auth_code.cancel()
 
+    # Create coroutine for loop task
+    # We do this so we can use create_task()
+    async def coro_for_request_loop(self):
+        while self.queries_this_hour < SPOTIFY_QUERY_RATE_PER_HOUR:
+            await self.request_new_songs()
+            print(self.queries_this_hour)
+        self.queries_this_hour = 0
+
     @tasks.loop(minutes=60)
     async def reset_count(self):
         """
@@ -90,9 +111,7 @@ class Spotify(commands.Cog):
         :return:
         """
         log.info("Preparing to reset query wait for Spotify")
-        while self.queries_this_hour < SPOTIFY_QUERY_RATE_PER_HOUR:
-            await self.request_new_songs()
-        self.queries_this_hour = 0
+        self.bot.loop.create_task(self.coro_for_request_loop())
 
     # auth code expires every 60 minutes.. so lets refresh it
     @tasks.loop(minutes=55)
