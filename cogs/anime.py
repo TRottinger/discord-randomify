@@ -48,7 +48,12 @@ class Anime(commands.Cog):
         log.info('Got query word: ' + str(query_word))
         # exclude NFSW categories
         query = query_word + '&gx=1&genre%5B%5D=9&genre%5B%5D=12&genre%5B%5D=33&genre%5B%5D=34'
-        search = mal.AnimeSearch(query)
+        log.info('Preparing to query with string ' + query)
+        try:
+            search = mal.AnimeSearch(query)
+        except Exception as e:
+            log.warning('Trouble querying anime')
+            log.warning(str(e))
         log.info('Got search with length: ' + str(len(search.results)))
 
         if len(search.results) == 0:
