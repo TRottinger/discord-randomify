@@ -9,5 +9,4 @@ pytest==6.1.2
 dnspython~=2.0.0
 pymongo[tls,srv]~=3.11.0
 mal-api~=0.3.4
-mal~=0.4.0
 expiringdict~=1.2.1

@@ -31,41 +31,34 @@ class Anime(commands.Cog):
     async def cache_anime(self, items):
         for item in items:
             self.anime_cache[item.mal_id] = item
-        log.info('Caching anime with len ' + str(len(items)))
 
     async def cache_manga(self, items):
         for item in items:
             self.manga_cache[item.mal_id] = item
-        log.info('Caching anime with len ' + str(len(items)))
 
     @commands.command(name="anime", description="Get a random anime", brief="Get a random anime. SFW")
     async def anime(self, ctx):
         """
         Queries the MAL api with a random word to get an anime
         """
-        log.info('Got command for anime')
         query_word = self.bot.random_words.get_random_query_strict()
-        log.info('Got query word: ' + str(query_word))
         # exclude NFSW categories
         query = query_word + '&gx=1&genre%5B%5D=9&genre%5B%5D=12&genre%5B%5D=33&genre%5B%5D=34'
-        log.info('Preparing to query with string ' + query)
         try:
             search = mal.AnimeSearch(query)
         except Exception as e:
             log.warning('Trouble querying anime')
             log.warning(str(e))
-        log.info('Got search with length: ' + str(len(search.results)))
+            await ctx.send('I had trouble processing the request')
+            return
 
         if len(search.results) == 0:
-            log.info('Len is 0 for anime results')
             if len(self.anime_cache) > 0:
-                log.info('Choosing from cache')
                 choice = random.choice(list(self.anime_cache.values()))
             else:
                 log.info('Setting to None')
                 choice = None
         else:
-            log.info('Len is > 0 for anime results. Picking random')
             choice = random.choice(search.results)
 
         if choice is None:
@@ -85,7 +78,13 @@ class Anime(commands.Cog):
         query_word = self.bot.random_words.get_random_query_strict()
         # exclude NFSW categories
         query = query_word + '&gx=1&genre%5B%5D=9&genre%5B%5D=12&genre%5B%5D=33&genre%5B%5D=34'
-        search = mal.MangaSearch(query)
+        try:
+            search = mal.MangaSearch(query)
+        except Exception as e:
+            log.warning('Trouble querying manga')
+            log.warning(str(e))
+            await ctx.send('I had trouble processing the request')
+            return
 
         if len(search.results) == 0:
             if len(self.manga_cache) > 0:
