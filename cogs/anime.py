@@ -8,8 +8,6 @@ import mal
 
 log = logging.getLogger(__name__)
 
-CACHE_MINUTES = 60
-
 
 async def populate_embed(choice, embed):
     embed.add_field(name='Title', value=str(choice.title), inline=True)
@@ -23,8 +21,8 @@ async def populate_embed(choice, embed):
 class Anime(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.anime_cache = ExpiringDict(max_len=5000, max_age_seconds=60*CACHE_MINUTES)
-        self.manga_cache = ExpiringDict(max_len=5000, max_age_seconds=60*CACHE_MINUTES)
+        self.anime_cache = ExpiringDict(max_len=5000, max_age_seconds=900)
+        self.manga_cache = ExpiringDict(max_len=5000, max_age_seconds=900)
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -33,10 +31,12 @@ class Anime(commands.Cog):
     async def cache_anime(self, items):
         for item in items:
             self.anime_cache[item.mal_id] = item
+        log.info('Caching anime with len ' + str(len(items)))
 
     async def cache_manga(self, items):
         for item in items:
             self.manga_cache[item.mal_id] = item
+        log.info('Caching anime with len ' + str(len(items)))
 
     @commands.command(name="anime", description="Get a random anime", brief="Get a random anime. SFW")
     async def anime(self, ctx):
@@ -60,6 +60,7 @@ class Anime(commands.Cog):
             await ctx.send('I had trouble processing the request')
         else:
             embed = discord.Embed(title='Random Anime')
+            log.info('Choice found: ' + str(choice.title))
             await self.cache_anime(search.results)
             output_embed = await populate_embed(choice, embed)
             await ctx.send(embed=output_embed)
@@ -86,6 +87,7 @@ class Anime(commands.Cog):
             await ctx.send('I had trouble processing the request')
         else:
             embed = discord.Embed(title='Random Manga')
+            log.info('Choice found: ' + str(choice.title))
             await self.cache_manga(search.results)
             output_embed = await populate_embed(choice, embed)
             await ctx.send(embed=output_embed)
