@@ -43,17 +43,24 @@ class Anime(commands.Cog):
         """
         Queries the MAL api with a random word to get an anime
         """
+        log.info('Got command for anime')
         query_word = self.bot.random_words.get_random_query_strict()
+        log.info('Got query word: ' + str(query_word))
         # exclude NFSW categories
         query = query_word + '&gx=1&genre%5B%5D=9&genre%5B%5D=12&genre%5B%5D=33&genre%5B%5D=34'
         search = mal.AnimeSearch(query)
+        log.info('Got search with length: ' + str(len(search.results)))
 
         if len(search.results) == 0:
+            log.info('Len is 0 for anime results')
             if len(self.anime_cache) > 0:
+                log.info('Choosing from cache')
                 choice = random.choice(list(self.anime_cache.values()))
             else:
+                log.info('Setting to None')
                 choice = None
         else:
+            log.info('Len is > 0 for anime results. Picking random')
             choice = random.choice(search.results)
 
         if choice is None:
