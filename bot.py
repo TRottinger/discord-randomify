@@ -45,7 +45,7 @@ class Bot(commands.AutoShardedBot):
         self.load_extension('cogs.config')
         self.load_extension('cogs.misc')
         self.load_extension('cogs.twitch')
-        self.load_extension('cogs.reddit')
+        # self.load_extension('cogs.reddit')
         self.load_extension('cogs.wiki')
         self.load_extension('cogs.common_randomizers')
         self.load_extension('cogs.games')
