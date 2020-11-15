@@ -6,6 +6,9 @@ from utils.url_builder import build_twitch_streams_url
 import random
 import logging
 
+# testing expiringdict
+from expiringdict import ExpiringDict
+
 log = logging.getLogger(__name__)
 
 load_dotenv()
@@ -32,14 +35,11 @@ class TwitchHelpers:
             self.client_secret = client_secret
         self.access_token = http_helpers.get_access_token(self.client_id, self.client_secret,
                                                           'https://id.twitch.tv/oauth2/token')
-        self.local_stream_cache = []
+        self.local_stream_cache = ExpiringDict(max_len=1000, max_age_seconds=600)
 
     async def refresh_access_token(self):
         self.access_token = http_helpers.get_access_token(self.client_id, self.client_secret,
                                                           'https://id.twitch.tv/oauth2/token')
-
-    def clear_local_cache(self):
-        self.local_stream_cache.clear()
 
     # Returns a dictionary of top 100 twitch games
     def get_twitch_games(self):
@@ -114,12 +114,13 @@ class TwitchHelpers:
 
             response = http_helpers.send_get_request(request_url, headers=headers)
             if http_helpers.handle_status_code(response) == 'Rate Limited':
-                streamers = self.local_stream_cache
+                streamers = self.local_stream_cache.values()
                 break
             try:
                 for data in response.json()['data']:
                     streamers.append(data)
-                    self.local_stream_cache.append(data)
+                    self.local_stream_cache[data['user_id']] = data
+                    #self.local_stream_cache.append(data)
             except KeyError:
                 log.warning('No streamers found for game: ' + str(game_id))
                 return None
@@ -140,7 +141,7 @@ class TwitchHelpers:
         :return: streamer
         """
         if cache is True:
-            streamers = self.local_stream_cache
+            streamers = self.local_stream_cache.values()
         else:
             streamers = self.get_twitch_streams(game_id)
 

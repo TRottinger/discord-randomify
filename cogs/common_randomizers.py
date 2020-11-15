@@ -112,54 +112,31 @@ class CommonRandomizer(commands.Cog):
             result = random.choice(args)
             await ctx.send(author + ' ' + str(result) + '')
 
-    @commands.command(name="russianroulette", description="Like choose but with russian roulette",
-                      brief="Classic Russian roulette. Example: russianroulette jane john",
-                      usage="<value1> <value2> ... [value6]")
-    async def russianroulette(self, ctx, *args):
-        """
-        A fun little game of Russian Roulette
-        It is not recommended to play this with more than 3 people
-        Rotates around in a circle taking shots
-        If there is a bullet in the chamber at the time of the shot, that person is shot and the game ends
-        Else, the game keeps going
-        The bot is very talkative with this commands
-        """
-        author = ctx.author.mention
-        bullets = 1
-        chamber = 6
-        emojis = self.bot.emojis
-        monkas = None
-        for emoji in emojis:
-            if emoji.name == 'monkaS':
-                monkas = str(emoji)
-                break
-        if monkas is None:
-            monkas = ':person_bald:'
-
-        if len(args) < 2:
-            await ctx.send(author + ' please provide enough arguments')
-        else:
-            random.shuffle(list(args))
-            rotate = len(args) - 1
-            index = 0
-            while bullets == 1:
-                await ctx.send('Alright, ' + args[index] + ', you\'re up. ' + str(chamber) + ' shots left.....')
-                time.sleep(1)
-                await ctx.send(monkas)
-                time.sleep(1)
-                result = await self.percent_roll((bullets/chamber)*100)
-                if result:
-                    await ctx.send(':boom:')
-                    await ctx.send('Sorry ' + args[index] + ', you lost!')
-                    break
-                else:
-                    await ctx.send(args[index] + ' you are OK')
-                    chamber -= 1
-                    if index == rotate:
-                        index = 0
-                    else:
-                        index += 1
-                    time.sleep(2)
+    # @commands.command(name="dramaticchoose", description="Choose between a list of things.. dramatically",
+    #                  brief="Choose one from list. Space separated input. Example: dramaticchoose red blue green",
+    #                  usage="<value1> <value2> ... [valueN]")
+    # async def dramaticchoose(self, ctx, *args):
+    #    """
+    #    Chooses between a list of arguments randomly, then outputs to author
+    #    Any number of arguments can be passed, but there must be at least 2
+    #    Arguments are separated by spaces
+    #    Example: choose red blue yellow
+    #    """
+    #    choices = [arg for arg in args]
+    #    if len(args) < 2:
+    #        await ctx.send('Please provide enough arguments')
+    #    elif len(args) > 10:
+    #        await ctx.send('That would take too long....')
+    #    else:
+    #        length = len(args)
+    #        for i in range(0, length-1):
+    #            await ctx.send('Removing one option from: ' + ', '.join(choices))
+    #            result = random.choice(args)
+    #            choices.remove(result)
+    #            time.sleep(1)
+    #            await ctx.send('Removed ' + str(result) + '!')
+    #            time.sleep(1)
+    #        await ctx.send('And the winner is: ' + ' '.join(choices))
 
 
 def setup(bot):
