@@ -43,9 +43,9 @@ Here are some popular commands
   !rt time
     - Gives you a random time in 24 hour format
 
-  !rt reddit 
-    - Gives you a random subreddit!
-    - By default, this is SFW
+  !rt podcast 
+    - Gives you a random podcast!
+    - SFW only
     
   !rt song
     - Gives you a random song on Spotify
