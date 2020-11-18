@@ -164,10 +164,10 @@ class Hollywood(commands.Cog):
                            'following list of genres: ' + ', '.join(genres.keys()))
         else:
             genre_id = genres[input_genre]
-            movie = self.common_discover_genre('tv', genre_id)
-            if movie is not None:
+            tv = self.common_discover_genre('tv', genre_id)
+            if tv is not None:
                 embed = discord.Embed(title='Random ' + input_genre + ' TV show')
-                output_embed = await prepare_embed(embed, movie)
+                output_embed = await prepare_embed(embed, tv)
                 await ctx.send(embed=output_embed)
             else:
                 await ctx.send('I\'m having trouble querying for tv shows right now.')
