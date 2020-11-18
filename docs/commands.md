@@ -9,6 +9,7 @@ To browse the commands, please select a category.
 - [Common Randomizers](commands/common_randomizers.md)
 - [Configuration and Information](commands/config.md)
 - [Games](commands/games.md)
+- [Movies/TV](commands/hollywood.md)
 - [Miscellaneous](commands/misc.md)
 - [Spotify](commands/spotify.md)
 - [Twitch](commands/twitch.md)

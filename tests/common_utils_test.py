@@ -26,6 +26,12 @@ class CommonUtilsTests(TestCase):
         rword = test_random_query.get_random_query_strict()
         self.assertEqual(rword, "word")
 
+    @mock.patch('utils.common_utils.setup_words', side_effect=mocked_setup_words)
+    def test_get_random_first_name(self, mock_get):
+        test_random_query = common_utils.RandomQuery()
+        rname = test_random_query.get_random_first_name()
+        self.assertEqual(rname, "word")
+
     @mock.patch('utils.common_utils.setup_words', side_effect=mocked_setup_words_empty)
     def test_get_random_query_empty(self, mock_get):
         test_random_query = common_utils.RandomQuery()
@@ -37,6 +43,12 @@ class CommonUtilsTests(TestCase):
         test_random_query = common_utils.RandomQuery()
         rword = test_random_query.get_random_query_strict()
         self.assertEqual(rword, "random")
+
+    @mock.patch('utils.common_utils.setup_words', side_effect=mocked_setup_words_empty)
+    def test_get_random_first_name_empty(self, mock_get):
+        test_random_query = common_utils.RandomQuery()
+        rname = test_random_query.get_random_first_name()
+        self.assertEqual(rname, "Tim")
 
 
 if __name__ == '__main__':
