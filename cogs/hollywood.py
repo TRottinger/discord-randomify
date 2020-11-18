@@ -138,7 +138,7 @@ class Hollywood(commands.Cog):
             genres[genre['name'].lower()] = genre['id']
         if input_genre not in genres.keys():
             # Maybe add a wait for user to pick a correct genre? Don't want to get spammed.....
-            await ctx.send('Sorry ' + ctx.author.mention + ' that genre is not available. Please select from the ' +
+            await ctx.send('Sorry ' + ctx.author.mention + ' that genre is not available. Please select from the '
                            'following list of genres: ' + ', '.join(genres.keys()))
         else:
             genre_id = genres[input_genre]
@@ -160,7 +160,7 @@ class Hollywood(commands.Cog):
             genres[genre['name'].lower()] = genre['id']
         if input_genre not in genres.keys():
             # Maybe add a wait for user to pick a correct genre? Don't want to get spammed.....
-            await ctx.send('Sorry ' + ctx.author.mention + ' that genre is not available. Please select from the ' +
+            await ctx.send('Sorry ' + ctx.author.mention + ' that genre is not available. Please select from the '
                            'following list of genres: ' + ', '.join(genres.keys()))
         else:
             genre_id = genres[input_genre]
