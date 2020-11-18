@@ -19,7 +19,7 @@ class TopGG(commands.Cog):
         self.bot = bot
         load_dotenv()
         self.token = os.getenv('TOPGG_TOKEN')
-        self.dblpy = dbl.DBLClient(self.bot, self.token)#autopost=True)
+        self.dblpy = dbl.DBLClient(self.bot, self.token, autopost=True)
 
 
     async def on_guild_post(self):
