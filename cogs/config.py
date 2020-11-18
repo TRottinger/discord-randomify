@@ -86,6 +86,14 @@ class Config(commands.Cog):
         """
         await ctx.send('To invite the bot to your server, use: https://discord.com/oauth2/authorize?client_id=770197604155785216&permissions=11328&scope=bot')
 
+    @commands.command(name='vote', description='Vote for my bot :)',
+                      brief='Link to vote for bot', aliases=["topgg"])
+    async def vote(self, ctx):
+        """
+        Sends the invite link for the bot to the channel
+        """
+        await ctx.send('If you enjoy using the bot, please visit https://top.gg/bot/770197604155785216 to review/upvote')
+
 
 def setup(bot):
     bot.add_cog(Config(bot))

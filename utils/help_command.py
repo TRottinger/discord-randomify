@@ -45,7 +45,7 @@ class CustomHelpCommand(commands.DefaultHelpCommand):
                         '''
             embed.set_author(name='Randomify Help Page')
             embed.set_thumbnail(url=self.context.bot.user.avatar_url)
-            embed.set_footer(text='Thanks for using Randomify!')
+            embed.set_footer(text='Thanks for using Randomify! Review and upvote at https://top.gg/bot/770197604155785216')
             for command in help_commands:
                 if command.usage is not None:
                     embed.add_field(name=str(command.name) + ' ' + str(command.usage), value=str(command.short_doc),
@@ -68,12 +68,12 @@ class CustomHelpCommand(commands.DefaultHelpCommand):
             embed = discord.Embed(title='Randomify Commands')
             embed.colour = discord.Colour.purple()
             embed.set_thumbnail(url=self.context.bot.user.avatar_url)
+            embed.set_footer(text='Review and upvote at https://top.gg/bot/770197604155785216')
             embed.description = '''
             Thank you for using Randomify, the bot for all your random needs!
+            To review and upvote, visit: https://top.gg/bot/770197604155785216
             For a more user-friendly list of help commands, visit: 
             https://trottinger.github.io/discord-randomify/commands
-
-            All commands can be invoked with !rt <command>.
             To set a custom prefix, try: !rt help prefix
             This message will delete after 60 seconds of inactivity
 
