@@ -1,3 +1,4 @@
+import asyncio
 import os
 
 import dbl
@@ -20,8 +21,17 @@ class TopGG(commands.Cog):
         self.token = os.getenv('TOPGG_TOKEN')
         self.dblpy = dbl.DBLClient(self.bot, self.token, autopost=True)
 
+
     async def on_guild_post(self):
         log.info("Posted server count")
+
+    async def get_if_user_voted(self, user_id):
+        try:
+            vote = await self.dblpy.get_user_vote(user_id)
+            return vote
+        except Exception as e:
+            log.warning('Exception: ' + str(e))
+            return False
 
     @commands.Cog.listener()
     async def on_dbl_vote(self, data):
@@ -32,6 +42,15 @@ class TopGG(commands.Cog):
     async def guildcount(self, ctx):
         info = self.dblpy.guild_count()
         await ctx.author.send(str(info))
+
+    @commands.is_owner()
+    @commands.command(hidden=True)
+    async def upvotes(self, ctx):
+        try:
+            info = await self.dblpy.get_bot_upvotes()
+            print(str(info))
+        except Exception as e:
+            log.warning('Exception: ' + str(e))
 
 
 def setup(bot):
