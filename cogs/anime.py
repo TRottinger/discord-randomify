@@ -1,12 +1,19 @@
+from urllib.request import Request
+import urllib.error
+
 from expiringdict import ExpiringDict
 import logging
 import random
 
 import discord
-from discord.ext import commands
+from discord.ext import commands, tasks
 import mal
 
+from utils import http_helpers
+
 log = logging.getLogger(__name__)
+
+WAIFU_REQUESTS_PER_MINUTE = 30
 
 
 async def populate_embed(choice, embed):
@@ -20,13 +27,22 @@ async def populate_embed(choice, embed):
 
 class Anime(commands.Cog):
     def __init__(self, bot):
+        log.info('Loading Anime cog')
         self.bot = bot
         self.anime_cache = ExpiringDict(max_len=5000, max_age_seconds=900)
         self.manga_cache = ExpiringDict(max_len=5000, max_age_seconds=900)
+        self.waifu_cache = ExpiringDict(max_len=5000, max_age_seconds=60*60*24)
+        self.waifu_limit = 0
+        self.reset_waifu_count.start()
 
-    @commands.Cog.listener()
-    async def on_ready(self):
-        log.info('Loading Anime cog')
+    @tasks.loop(seconds=60)
+    async def reset_waifu_count(self):
+        """
+        Resets the manually set rate limit every hour
+        :return:
+        """
+        print('resetting limit')
+        self.waifu_limit = 0
 
     async def cache_anime(self, items):
         for item in items:
@@ -102,6 +118,43 @@ class Anime(commands.Cog):
             await self.cache_manga(search.results)
             output_embed = await populate_embed(choice, embed)
             await ctx.send(embed=output_embed)
+
+    @commands.command(name="waifu", description="Get a random waifu", brief="Get a random waifu. SFW")
+    async def waifu(self, ctx):
+        url = "https://mywaifulist.moe/random"
+
+        # 'Premium' command. Check if user voted for bot
+        topgg = self.bot.get_cog('TopGG')
+        if topgg is not None:
+            voted = await topgg.get_if_user_voted(ctx.author.id)
+        else:
+            voted = True
+
+        if voted is not True:
+            await ctx.send(ctx.author.mention + ' sorry! That command is locked to people who upvote the bot. Please '
+                                                'visit https://top.gg/bot/770197604155785216 to upvote. It really helps'
+                                                ' a lot!')
+            return
+
+        if self.waifu_limit < WAIFU_REQUESTS_PER_MINUTE:
+            try:
+                urlopen = urllib.request.Request(url)
+                urlopen.add_header('User-Agent', 'Discord-Randomify/v1.1.2')
+                if urlopen.full_url.startswith('https'):
+                    with urllib.request.urlopen(urlopen) as response:
+                        result = str(response.url)
+                        name = result.split('/')
+                        name = name[len(name)-1]
+                        self.waifu_cache[name] = result
+            except urllib.error.HTTPError:
+                result = 'I\'m being rate limited, so manually click this: ' + url
+        else:
+            if len(self.waifu_cache) > 0:
+                result = random.choice(list(self.waifu_cache.values()))
+            else:
+                result = 'I\'m being rate limited, so manually click this: ' + url
+        author = ctx.author.mention
+        await ctx.send(author + ' ' + result + '')
 
 
 def setup(bot):
