@@ -54,6 +54,7 @@ class Bot(commands.AutoShardedBot):
         self.load_extension('cogs.admin')
         self.load_extension('cogs.spotify')
         self.load_extension('cogs.topgg')
+        self.load_extension('cogs.hollywood')
 
     def startup(self):
         self.run(TOKEN, reconnect=True)

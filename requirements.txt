@@ -12,3 +12,4 @@ mal-api~=0.3.4
 expiringdict~=1.2.1
 asyncpraw~=7.1.0
 dblpy==0.4.0
+tmdbsimple~=2.6.6
