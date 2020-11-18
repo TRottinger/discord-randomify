@@ -129,7 +129,7 @@ class Hollywood(commands.Cog):
             await ctx.send('I\'m having trouble querying for tv shows right now.')
 
     @commands.command(name="moviegenre", description="Get a random movie by genre",
-                      brief="Get a random movie by genre")
+                      brief="Get a random movie by genre", usage="<genre>")
     async def moviegenre(self, ctx, *, input_genre=None):
         genre = tmdb.Genres()
         response = genre.movie_list(language='en_US')
@@ -151,7 +151,7 @@ class Hollywood(commands.Cog):
                 await ctx.send('I\'m having trouble querying for movies right now.')
 
     @commands.command(name="tvgenre", description="Get a random tv show by genre",
-                      brief="Get a random tv show by genre")
+                      brief="Get a random tv show by genre", usage="<genre>")
     async def tvgenre(self, ctx, *, input_genre=None):
         genre = tmdb.Genres()
         response = genre.tv_list(language='en_US')
