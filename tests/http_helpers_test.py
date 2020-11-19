@@ -67,7 +67,7 @@ class HttpHelpersTests(TestCase):
     @mock.patch('utils.http_helpers.requests.get', side_effect=mocked_requests_get)
     def test_get_random_query(self, mock_get):
         resp = http_helpers.send_get_request('http://url.com/', headers=None)
-        self.assertIn(mock.call('http://url.com/', headers=None), mock_get.call_args_list)
+        self.assertIn(mock.call('http://url.com/', headers=None, timeout=1), mock_get.call_args_list)
         self.assertEqual(resp.json(), {"key1": "value1"})
         self.assertEqual(resp.status_code, 200)
 
