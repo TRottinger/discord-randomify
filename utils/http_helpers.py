@@ -42,8 +42,14 @@ def send_get_request(query_url, headers):
     :param headers:
     :return:
     """
-    response = requests.get(query_url, headers=headers)
+    response = requests.get(query_url, headers=headers, timeout=1)
     return response
+
+
+async def send_async_get_request(query_url, headers, session):
+    async with session.get(query_url, headers=headers) as response:
+        text = await response.json()
+    return text
 
 
 def get_access_token(client_id, client_secret, url):

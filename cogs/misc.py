@@ -1,6 +1,7 @@
 import logging
 import os
 
+import aiohttp
 from discord.ext import commands
 import random
 from dotenv import load_dotenv
@@ -14,6 +15,7 @@ class MiscFunctions(commands.Cog):
         self.bot = bot
         load_dotenv()
         self.cat_api_key = os.getenv('CAT_API_KEY')
+        self.session = aiohttp.ClientSession(loop=bot.loop)
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -86,9 +88,11 @@ class MiscFunctions(commands.Cog):
         """
         Uses the dog.ceo/dog-api endpoint to get a random doggo!
         """
-        response = http_helpers.send_get_request('https://dog.ceo/api/breeds/image/random', headers=None)
-        if http_helpers.handle_status_code(response) == 'OK':
-            result = response.json()['message']
+        response = await http_helpers.send_async_get_request('https://dog.ceo/api/breeds/image/random', headers=None,
+                                                             session=self.session)
+        print(response)
+        if response['status'] == 'success':
+            result = response['message']
         else:
             result = 'Sorry, I had trouble finding a dog'
         await ctx.send(str(result))
