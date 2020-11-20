@@ -38,7 +38,7 @@ class Anime(commands.Cog):
     @tasks.loop(seconds=60)
     async def reset_waifu_count(self):
         """
-        Resets the manually set rate limit every hour
+        Resets the manually set rate limit every minute
         :return:
         """
         print('resetting limit')

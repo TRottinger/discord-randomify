@@ -2,6 +2,8 @@
 [![Build Status](https://travis-ci.com/TRottinger/discord-randomify.svg?branch=dev)](https://travis-ci.com/TRottinger/discord-randomify)
 [![CodeFactor](https://www.codefactor.io/repository/github/trottinger/discord-randomify/badge/dev)](https://www.codefactor.io/repository/github/trottinger/discord-randomify/overview/dev)
 [![Discord](https://img.shields.io/discord/770772439436361768)](https://discord.gg/EbZ3QX4)
+[![Discord Bots](https://top.gg/api/widget/servers/770197604155785216.svg)](https://top.gg/bot/770197604155785216)
+[![Discord Bots](https://top.gg/api/widget/status/770197604155785216.svg)](https://top.gg/bot/770197604155785216)
 
 Code for a discord bot that produces all things random!
 
