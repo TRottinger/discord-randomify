@@ -36,16 +36,16 @@ class CustomHelpCommand(commands.DefaultHelpCommand):
                 commands_to_paginate.append(command_help_entry)
             await self.paginate_help(commands_to_paginate)
         else:
-            embed = discord.Embed(title='Randomify Commands')
+            embed = discord.Embed(title='Randomi Commands')
             embed.colour = discord.Colour.blue()
             embed.description = '''
-                        List of commands available for Randomify
+                        List of commands available for Randomi
                         For a more user-friendly list of help commands, visit:
                         https://trottinger.github.io/discord-randomify/commands
                         '''
-            embed.set_author(name='Randomify Help Page')
+            embed.set_author(name='Randomi Help Page')
             embed.set_thumbnail(url=self.context.bot.user.avatar_url)
-            embed.set_footer(text='Thanks for using Randomify! Review and upvote at https://top.gg/bot/770197604155785216')
+            embed.set_footer(text='Thanks for using Randomi! Review and upvote at https://top.gg/bot/770197604155785216')
             for command in help_commands:
                 if command.usage is not None:
                     embed.add_field(name=str(command.name) + ' ' + str(command.usage), value=str(command.short_doc),
@@ -65,12 +65,12 @@ class CustomHelpCommand(commands.DefaultHelpCommand):
         content = []
         pages = ceil(len(command_listing) / 10)
         for i in range(0, pages):
-            embed = discord.Embed(title='Randomify Commands')
+            embed = discord.Embed(title='Randomi Commands')
             embed.colour = discord.Colour.purple()
             embed.set_thumbnail(url=self.context.bot.user.avatar_url)
             embed.set_footer(text='Review and upvote at https://top.gg/bot/770197604155785216')
             embed.description = '''
-            Thank you for using Randomify, the bot for all your random needs!
+            Thank you for using Randomi, the bot for all your random needs!
             To review and upvote, visit: https://top.gg/bot/770197604155785216
             For a more user-friendly list of help commands, visit: 
             https://trottinger.github.io/discord-randomify/commands

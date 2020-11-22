@@ -137,6 +137,20 @@ class Admin(commands.Cog):
 
     @commands.is_owner()
     @commands.command(hidden=True)
+    async def usercount(self, ctx):
+        """
+        Returns latency of bot
+        :param ctx:
+        :return:
+        """
+        users = 0
+        for guild in self.bot.guilds:
+            users += guild.member_count
+        await ctx.author.send('User count: ' + str(users))
+
+
+    @commands.is_owner()
+    @commands.command(hidden=True)
     async def get_large_guilds(self, ctx):
         """
         Returns latency of bot
@@ -150,7 +164,7 @@ class Admin(commands.Cog):
                 large_guilds.append(guild)
 
         if len(large_guilds) > 0:
-            await ctx.author.send('Here are the large guilds: ' + str (large_guilds))
+            await ctx.author.send('Here are the large guilds: ' + str(large_guilds))
         else:
             await ctx.author.send('No large guilds')
 
