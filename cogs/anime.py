@@ -7,7 +7,7 @@ import random
 
 import discord
 from discord.ext import commands, tasks
-import mal
+from mal import *
 
 from utils import http_helpers
 
@@ -59,9 +59,9 @@ class Anime(commands.Cog):
         """
         query_word = self.bot.random_words.get_random_query_strict()
         # exclude NFSW categories
-        query = query_word + '&gx=1&genre%5B%5D=9&genre%5B%5D=12&genre%5B%5D=33&genre%5B%5D=34'
+        query = query_word + '&genre_ex%5B%5D=9&genre_ex%5B%5D=49&genre_ex%5B%5D=12'
         try:
-            search = mal.AnimeSearch(query)
+            search = AnimeSearch(query)
         except Exception as e:
             log.warning('Trouble querying anime')
             log.warning(str(e))
@@ -93,9 +93,9 @@ class Anime(commands.Cog):
         """
         query_word = self.bot.random_words.get_random_query_strict()
         # exclude NFSW categories
-        query = query_word + '&gx=1&genre%5B%5D=9&genre%5B%5D=12&genre%5B%5D=33&genre%5B%5D=34'
+        query = query_word + '&genre_ex%5B%5D=9&genre_ex%5B%5D=49&genre_ex%5B%5D=12'
         try:
-            search = mal.MangaSearch(query)
+            search = MangaSearch(query)
         except Exception as e:
             log.warning('Trouble querying manga')
             log.warning(str(e))

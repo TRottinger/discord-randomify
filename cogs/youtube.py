@@ -69,6 +69,7 @@ class YouTube(commands.Cog):
         Loads in videos from MongoDB
         :return:
         """
+        log.info("Getting videos")
         self.videos = [link for link in self.db_links_table.find()]
 
     @tasks.loop(minutes=60)

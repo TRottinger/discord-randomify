@@ -51,7 +51,6 @@ class Bot(commands.AutoShardedBot):
         self.load_extension('cogs.games')
         self.load_extension('cogs.youtube')
         self.load_extension('cogs.anime')
-        self.load_extension('cogs.admin')
         self.load_extension('cogs.spotify')
         self.load_extension('cogs.topgg')
         self.load_extension('cogs.hollywood')
