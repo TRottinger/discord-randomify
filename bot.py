@@ -28,7 +28,7 @@ class Bot(commands.AutoShardedBot):
 
     def __init__(self, **options):
         super().__init__(**options)
-        self.db_client = pymongo.MongoClient(MONGO_DB_URL)
+        self.db_client: pymongo.MongoClient = pymongo.MongoClient(MONGO_DB_URL)
         self.db_bot = self.db_client.get_database('Bot')
         self.db_prefix_table = self.db_bot.get_collection('GuildPrefixes')
         self.default_prefix = '!rt '
