@@ -41,7 +41,6 @@ class Anime(commands.Cog):
         Resets the manually set rate limit every minute
         :return:
         """
-        print('resetting limit')
         self.waifu_limit = 0
 
     async def cache_anime(self, items):

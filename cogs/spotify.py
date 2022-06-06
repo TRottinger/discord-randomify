@@ -1,12 +1,13 @@
 import os
 import random
 import logging
-import asyncio
+import pymongo
 
 import discord
 from discord.ext import commands, tasks
 from dotenv import load_dotenv
 from expiringdict import ExpiringDict
+from bot import Bot
 
 from utils.url_builder import build_url_kwargs
 from utils.http_helpers import handle_status_code, get_access_token, form_auth_headers
@@ -29,11 +30,10 @@ class Spotify(commands.Cog):
     """
 
     def __init__(self, bot):
-        self.bot = bot
+        self.bot: Bot = bot
 
         log.info('Loading Spotify cog')
 
-        self.songs = []
         # initialize to max so that we don't run it on init
         self.queries_this_hour = SPOTIFY_QUERY_RATE_PER_HOUR
         self.search_url = 'https://api.spotify.com/v1/search'
@@ -47,9 +47,8 @@ class Spotify(commands.Cog):
 
         self.artist_cache = ExpiringDict(max_len=5000, max_age_seconds=60*CACHE_MINUTES)
         self.podcast_cache = ExpiringDict(max_len=5000, max_age_seconds=60*CACHE_MINUTES)
-        # Initialize functions and tasks
 
-        self.populate_on_ready_from_db()
+        # Initialize functions and tasks
         self.reset_auth_code.start()
         self.reset_count.start()
 
@@ -77,27 +76,12 @@ class Spotify(commands.Cog):
                 }
                 # only add SFW tracks
                 if track['explicit'] is False:
-                    # self.songs.append(item)
-                    # self.db_songs_table.insert_one(item)
                     new_items.append(item)
         else:
             log.warning('Received response code: ' + str(status_code))
 
-        # I know it looks very weird that we are appending to a list
-        # then extending our two existing data structures.
-        # I was blocking the heartbeat if I didn't do it this way
-        # This is bad for memory, but better for time, because we avoid
-        # db_songs_table.insert_one() for every new song
-        self.songs.extend(new_items)
         self.db_songs_table.insert_many(new_items)
         self.queries_this_hour += 1
-
-    def populate_on_ready_from_db(self):
-        """
-        Loads in videos from MongoDB
-        :return:
-        """
-        self.songs = [link for link in self.db_songs_table.find()]
 
     def cog_unload(self):
         self.reset_count.cancel()
@@ -145,9 +129,13 @@ class Spotify(commands.Cog):
             await self.request_new_songs()
 
         author = ctx.author.mention
-        song = random.choice(self.songs)
-        await ctx.send(author + ' Check this out on Spotify: '
-                       + str(song['Link']))
+        songCursor = [song for song in self.db_songs_table.aggregate([{ "$sample": { "size": 1 }}])]
+        if len(songCursor) > 0:
+            song = songCursor[0]
+            await ctx.send(author + ' Check this out on Spotify: '
+                        + str(song['Link']))
+        else:
+            await ctx.send(author + ' sorry :( I had issues with getting you a song.')
 
     @commands.cooldown(10, 60, commands.BucketType.user)
     @commands.command(name="artist", description="Get a link to a random Spotify artist", brief="Random Spotify artist")
