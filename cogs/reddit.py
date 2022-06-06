@@ -49,7 +49,6 @@ class Reddit(commands.Cog):
         if subreddit.display_name is not None:
             embed.add_field(name='Link', value="http://www.reddit.com/r/" + str(subreddit.display_name), inline=False)
         await ctx.send(embed=embed)
-        print(subreddit.submission_type)
 
 
 def setup(bot):
