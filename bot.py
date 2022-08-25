@@ -1,8 +1,13 @@
 #!/usr/bin/python3
+import asyncio
+import logging
 import os
-from discord.ext import commands
 from dotenv import load_dotenv
 import pymongo
+import discord
+from discord import app_commands
+from groups.admin import Admin
+from groups.twitch import Twitch
 
 # Load twitch client id and secret into file
 from utils.common_utils import RandomQuery
@@ -20,14 +25,16 @@ MONGO_DB_URL = os.getenv('MONGO_DB')
 
 SHARED_SERVER = 773783340763316224
 
+log = logging.getLogger(__name__)
 
-class Bot(commands.AutoShardedBot):
+class Bot(discord.Client):
     """
     The main Bot class for Randomify
     """
 
     def __init__(self, **options):
         super().__init__(**options)
+        self.tree = app_commands.CommandTree(self)
         self.db_client: pymongo.MongoClient = pymongo.MongoClient(MONGO_DB_URL)
         self.db_bot = self.db_client.get_database('Bot')
         self.db_prefix_table = self.db_bot.get_collection('GuildPrefixes')
@@ -37,7 +44,12 @@ class Bot(commands.AutoShardedBot):
         self.help_command = CustomHelpCommand()
         self.random_words = RandomQuery()
 
-    def setup_extensions(self):
+    async def setup_hook(self):
+        self.tree.add_command(Admin())
+        self.tree.add_command(Twitch())
+        await self.tree.sync()
+
+    async def setup_extensions(self):
         """
         Loads the extensions for the bot
         :return:
@@ -58,17 +70,17 @@ class Bot(commands.AutoShardedBot):
     def startup(self):
         self.run(TOKEN, reconnect=True)
 
-    async def on_command_error(self, ctx, error):
-        if isinstance(error, commands.CommandNotFound):
-            await ctx.send(ctx.author.mention + ' - Sorry, that command does not exist!')
-        elif isinstance(error, commands.CommandOnCooldown):
-            string = """Sorry, that command is on cooldown.  You can call this command {times} times every {second} sec
-            Try running the command again is {retry} seconds.""".format(
-                times=error.cooldown.rate, second=error.cooldown.per, retry=int(error.retry_after))
+    # async def on_command_error(self, ctx, error):
+    #     if isinstance(error, commands.CommandNotFound):
+    #         await ctx.send(ctx.author.mention + ' - Sorry, that command does not exist!')
+    #     elif isinstance(error, commands.CommandOnCooldown):
+    #         string = """Sorry, that command is on cooldown.  You can call this command {times} times every {second} sec
+    #         Try running the command again is {retry} seconds.""".format(
+    #             times=error.cooldown.rate, second=error.cooldown.per, retry=int(error.retry_after))
 
-            await ctx.send(ctx.author.mention + ' ' + string)
-        elif isinstance(error, commands.MissingPermissions):
-            await ctx.send(ctx.author.mention + ', you do not have permissions to run ' + str(ctx.command))
+    #         await ctx.send(ctx.author.mention + ' ' + string)
+    #     elif isinstance(error, commands.MissingPermissions):
+    #         await ctx.send(ctx.author.mention + ', you do not have permissions to run ' + str(ctx.command))
 
     async def on_guild_join(self, guild):
         channel = self.get_guild(self.support_id).text_channels[0]

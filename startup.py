@@ -7,6 +7,9 @@ from bot import Bot
 
 import logging
 
+from groups.admin import Admin
+from groups.twitch import Twitch
+
 load_dotenv()
 TESTING = os.getenv('testing')
 
@@ -31,14 +34,10 @@ def startup():
     log.info("Starting Bot")
     owner_id = 179780915558481929
     bot = Bot(intents=discord.Intents.default(),
-              activity=discord.Activity(type=discord.ActivityType.playing, name='Random Time! !rt help'),
+              activity=discord.Activity(type=discord.ActivityType.playing, name='Now With Slash Commands!'),
               owner_id=owner_id,
               command_prefix=_guild_prefix)
-    log.info("Loading extensions")
-    if TESTING == 'False':
-        bot.setup_extensions()
-    else:
-        bot.load_extension('cogs.admin')
+
     log.info("Running bot")
     bot.startup()
 

@@ -1,13 +1,23 @@
 import logging
+from typing import Union
 
+import discord
 from discord.ext import commands
+from discord import app_commands
+
+from bot import Bot
 
 log = logging.getLogger(__name__)
 
 
-class Admin(commands.Cog):
+
+class Admin(app_commands.Group):
     def __init__(self, bot):
+        super().__init__()
         self.bot = bot
+
+    def check_if_it_is_me(interaction: discord.Interaction) -> bool:
+        return interaction.user.id == 179780915558481929
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -91,6 +101,18 @@ class Admin(commands.Cog):
         guilds = self.bot.guilds
         await ctx.author.send([guild.name for guild in guilds])
 
+    @app_commands.command()
+    @app_commands.check(check_if_it_is_me)
+    async def get_guilds_new(self, interaction: discord.Interaction):
+        """
+        Get all the guilds that the bot is in
+        :param ctx:
+        :return:
+        """
+        guilds = self.bot.guilds
+        await interaction.response.send_message([guild.name for guild in guilds])
+
+
     @commands.is_owner()
     @commands.command(hidden=True)
     async def get_cogs(self, ctx):
@@ -167,7 +189,3 @@ class Admin(commands.Cog):
             await ctx.author.send('Here are the large guilds: ' + str(large_guilds))
         else:
             await ctx.author.send('No large guilds')
-
-
-def setup(bot):
-    bot.add_cog(Admin(bot))
