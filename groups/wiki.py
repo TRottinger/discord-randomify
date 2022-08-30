@@ -1,31 +1,22 @@
 import logging
 
 import discord
-from discord.ext import commands
+from discord import app_commands
 import random
 import wikipedia
 
 log = logging.getLogger(__name__)
 
 
-class Wiki(commands.Cog):
+class Wiki(app_commands.Group):
     """
     Main cog Class for wikipedia functionality
     """
-    def __init__(self, bot):
-        self.bot = bot
+    def __init__(self):
+        super().__init__()
 
-    @commands.Cog.listener()
-    async def on_ready(self):
-        """
-        Populates from DB on bot start up
-        :return:
-        """
-        log.info('Loading Wiki cog')
-
-    @commands.command(name="wiki", description="Get a link to a random wiki article", aliases=["wikipedia"],
-                      brief="Get a random wiki article")
-    async def wiki(self, ctx):
+    @app_commands.command(name="wiki", description="Get a link to a random wiki article")
+    async def wiki(self, interaction: discord.Interaction):
         """
         Gets a random wikipedia link and returns it to the user
         """
@@ -40,7 +31,7 @@ class Wiki(commands.Cog):
         embed.add_field(name='Summary', value=info.summary, inline=False)
         embed.set_footer(text='Link hidden for SFW purposes')
         embed.colour = discord.Colour.orange()
-        await ctx.send(embed=embed)
+        await interaction.response.send_message(embed=embed)
 
 
 def setup(bot):

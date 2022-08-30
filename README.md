@@ -18,17 +18,14 @@ It utilizes the discord.py library to integrate smoothly with Discord.
 To invite the bot to your server, use: https://bit.ly/2JqfTQN
 
 # Usage
-The current bot prefix is !rt. You can use !rt help to get started. Some of the popular commands:
+This bot has been upgraded to support Discord Interactions and Slash Commands! You can view
+all of the commands by typing "/" in Discord and selecting this bot's icon!
 
-  !rt coinflip                          
-  
-  !rt subreddit
-  
-  !rt twitch
-  
-  !rt wiki                  
+Some example slash commands:
 
-  !rt youtube               
+- /youtube video
+- /spotify song
+- /twitch stream
 
 Please visit https://trottinger.github.io/discord-randomify/ for a full command listing.
   
