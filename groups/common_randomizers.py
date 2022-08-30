@@ -1,24 +1,23 @@
 import random
 import time
+from typing import Optional
 
-from discord.ext import commands
+import discord
+from discord import app_commands
 
 import logging
 
 log = logging.getLogger(__name__)
 
 
-class CommonRandomizer(commands.Cog):
+class CommonRandomizer(app_commands.Group):
     """
     Class for commonly used and know randomizers.
     Example: Dice roll, coin flip, etc.
     """
-    def __init__(self, bot):
-        self.bot = bot
-
-    @commands.Cog.listener()
-    async def on_ready(self):
-        log.info('Loading Common Randomizers cog')
+    def __init__(self):
+        super().__init__()
+        log.info("Loading command randomizers")
 
     async def percent_roll(self, percent):
         """
@@ -28,9 +27,8 @@ class CommonRandomizer(commands.Cog):
         """
         return random.randrange(100) < percent
 
-    @commands.command(name="coinflip", description="Flip a coin", aliases=['coin', 'cflip'],
-                      brief="Classic coin flip")
-    async def coinflip(self, ctx):
+    @app_commands.command(name="coinflip", description="Flip a coin")
+    async def coinflip(self, interaction: discord.Interaction):
         """
         Flip the coin! Then send a message to the author with the result
         """
@@ -39,22 +37,20 @@ class CommonRandomizer(commands.Cog):
             result = 'Heads'
         else:
             result = 'Tails'
-        author = ctx.author.mention
-        await ctx.send(author + ' ' + result + '')
+        await interaction.response.send_message(interaction.user.mention + ' ' + result + '')
 
-    @commands.command(name="diceroll", description="Roll a 6 sided die", aliases=['dice', 'droll'],
-                      brief="Roll a six-sided die")
-    async def diceroll(self, ctx):
+    @app_commands.command(name="diceroll", description="Roll a 6 sided die")
+    async def diceroll(self, interaction: discord.Interaction):
         """
         Roll a six-sided dice, then let the author know the result
         """
         result = random.randint(1, 6)
-        author = ctx.author.mention
-        await ctx.send(author + ' ' + str(result) + '')
+        author = interaction.user.mention
+        await interaction.response.send_message(author + ' ' + str(result) + '')
 
-    @commands.command(name="roll", description="Roll a number. Defaults to rolling from 1-100",
-                      brief="Provide a number to roll to that amount", usage="[value]")
-    async def roll(self, ctx, *, arg=100):
+    @app_commands.command(name="roll", description="Roll a number. Defaults to rolling from 1-100")
+    @app_commands.describe(arg="Roll between 1 and this number")
+    async def roll(self, interaction: discord.Interaction, arg: Optional[int] = 100):
         """
         Roll from 1 to a number. Sends the output to the author
         This defaults to 100
@@ -62,16 +58,16 @@ class CommonRandomizer(commands.Cog):
         Example: roll 50
             - Rolls from 1-50
         """
-        author = ctx.author.mention
+        author = interaction.user.mention
         if arg > 1000001:
-            await ctx.send(author + ' really? Why do you need to roll that high? Just don\'t')
+            await interaction.response.send_message(author + ' really? Why do you need to roll that high? Just don\'t')
         else:
             result = random.randint(1, arg)
-            await ctx.send(author + ' ' + str(result) + '')
+            await interaction.response.send_message(author + ' ' + str(result) + '')
 
-    @commands.command(name="dndroll", description="Roll a dnd dice. Format XdY where X and Y are numbers",
-                      brief="Roll a dnd dice. Format [1-9]d[1-20]. Example: dndroll 2d6", usage="[1-9d1-20]")
-    async def dndroll(self, ctx, *, arg='1d20'):
+    @app_commands.command(name="dndroll", description="Roll a dnd dice. Format XdY where X and Y are numbers")
+    @app_commands.describe(arg="NdK where N is how many rolls and K is K-sided dice (i.e. 1d10)")
+    async def dndroll(self, interaction: discord.Interaction, arg: Optional[str] = '1d20'):
         """
         Rolls a DnD dice, then outputs the value to the author
         This defaults to a "1d20" roll
@@ -80,37 +76,37 @@ class CommonRandomizer(commands.Cog):
         Example: dndroll 1d10 (This rolls 1 d10 die)
         """
         ints = arg.split('d')
-        author = ctx.author.mention
+        author = interaction.user.mention
         if len(ints) != 2:
-            await ctx.send(author + ' invalid arguments. Try again! Example: 1d6')
+            await interaction.response.send_message(author + ' invalid arguments. Try again! Example: 1d6')
+            return
         times = ints[0]
         dice = ints[1]
         if not times.isdigit() or not dice.isdigit():
-            await ctx.send(author + ' invalid arguments. Try again! Example: 1d6')
+            await interaction.response.send_message(author + ' invalid arguments. Try again! Example: 1d6')
+            return
         times = int(times)
         dice = int(dice)
         if times > 9 or dice > 20:
-            await ctx.send(author + ' numbers too high!')
+            await interaction.response.send_message(author + ' numbers too high!')
         else:
             result = times * random.randint(1, dice)
-            await ctx.send(author + ' your ' + str(times) + 'd' + str(dice) + ' roll returned ' + str(result) + '')
+            await interaction.response.send_message(author + ' your ' + str(times) + 'd' + str(dice) + ' roll returned ' + str(result) + '')
 
-    @commands.command(name="choose", description="Choose between a list of things",
-                      brief="Choose one from list. Space separated input. Example: choose red blue green",
-                      usage="<value1> <value2> ... [valueN]")
-    async def choose(self, ctx, *args):
-        """
-        Chooses between a list of arguments randomly, then outputs to author
-        Any number of arguments can be passed, but there must be at least 2
-        Arguments are separated by spaces
-        Example: choose red blue yellow
-        """
-        author = ctx.author.mention
-        if len(args) < 2:
-            await ctx.send(author + ' please provide enough arguments')
-        else:
-            result = random.choice(args)
-            await ctx.send(author + ' ' + str(result) + '')
+    # @app_commands.command(name="choose", description="Choose between a list of things")
+    # async def choose(self, interaction: discord.Interaction, args: str):
+    #     """
+    #     Chooses between a list of arguments randomly, then outputs to author
+    #     Any number of arguments can be passed, but there must be at least 2
+    #     Arguments are separated by spaces
+    #     Example: choose red blue yellow
+    #     """
+    #     author = interaction.user.mention
+    #     if len(args) < 2:
+    #         await interaction.response.send_message(author + ' please provide enough arguments')
+    #     else:
+    #         result = random.choice(args)
+    #         await interaction.response.send_message(author + ' ' + str(result) + '')
 
     # @commands.command(name="dramaticchoose", description="Choose between a list of things.. dramatically",
     #                  brief="Choose one from list. Space separated input. Example: dramaticchoose red blue green",
@@ -137,7 +133,3 @@ class CommonRandomizer(commands.Cog):
     #            await ctx.send('Removed ' + str(result) + '!')
     #            time.sleep(1)
     #        await ctx.send('And the winner is: ' + ' '.join(choices))
-
-
-def setup(bot):
-    bot.add_cog(CommonRandomizer(bot))

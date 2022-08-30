@@ -1,8 +1,9 @@
+from code import interact
 import os
 import random
 
 import discord
-from discord.ext import commands
+from discord import app_commands
 import logging
 
 from dotenv import load_dotenv
@@ -33,12 +34,13 @@ async def prepare_embed(embed, item):
     return embed
 
 
-class Hollywood(commands.Cog):
+class Hollywood(app_commands.Group):
     """
     Cog for TV / Movie / etc related functionality
     """
-    def __init__(self, bot):
-        self.bot = bot
+    def __init__(self, random_words):
+        super().__init__()
+        self.random_words = random_words
         load_dotenv()
         self.tmdb_api_key = os.getenv('TMDB_API_KEY')
         tmdb.API_KEY = self.tmdb_api_key
@@ -51,16 +53,16 @@ class Hollywood(commands.Cog):
         while found is False and attempts <= 3:
             search = tmdb.Search()
             if search_type == 'movie':
-                query = self.bot.random_words.get_random_query_strict()
+                query = self.random_words.get_random_query_strict()
                 response = search.movie(query=query, include_adult=False, language='en_US')
             elif search_type == 'tv':
-                query = self.bot.random_words.get_random_query_strict()
+                query = self.random_words.get_random_query_strict()
                 response = search.tv(query=query, include_adult=False, language='en_US')
             elif search_type == 'person':
-                query = self.bot.random_words.get_random_first_name()
+                query = self.random_words.get_random_first_name()
                 response = search.person(query=query, include_adult=False, language='en_US')
             else:
-                query = self.bot.random_words.get_random_query_strict()
+                query = self.random_words.get_random_query_strict()
                 response = search.movie(query=query, include_adult=False, language='en_US')
             if len(response['results']) > 0:
                 found = True
@@ -91,31 +93,28 @@ class Hollywood(commands.Cog):
         else:
             return None
 
-    @commands.command(name="movie", description="Get a random movie", brief="Get a random movie",
-                      aliases=["mv"])
-    async def movie(self, ctx):
+    @app_commands.command(name="movie", description="Get a random movie")
+    async def movie(self, interaction: discord.Interaction):
         movie = self.common_query('movie')
         if movie is not None:
             embed = discord.Embed(title='Random Movie')
             output_embed = await prepare_embed(embed, movie)
-            await ctx.send(embed=output_embed)
+            await interaction.response.send_message(embed=output_embed)
         else:
-            await ctx.send('I\'m having trouble querying for movies right now.')
+            await interaction.response.send_message('I\'m having trouble querying for movies right now.')
 
-    @commands.command(name="tv", description="Get a random tv show", brief="Get a random tv show",
-                      aliases=["tvshow"])
-    async def tv(self, ctx):
+    @app_commands.command(name="tv", description="Get a random tv show")
+    async def tv(self, interaction: discord.Interaction):
         tv = self.common_query('tv')
         if tv is not None:
             embed = discord.Embed(title='Random TV Show')
             output_embed = await prepare_embed(embed, tv)
-            await ctx.send(embed=output_embed)
+            await interaction.response.send_message(embed=output_embed)
         else:
-            await ctx.send('I\'m having trouble querying for tv shows right now.')
+            await interaction.response.send_message('I\'m having trouble querying for tv shows right now.')
 
-    @commands.command(name="mediaperson", description="Get a person involved in movies, TV shows, etc",
-                      brief="Get a person involved in media", aliases=["media"])
-    async def mediaperson(self, ctx):
+    @app_commands.command(name="mediaperson", description="Get a person involved in movies, TV shows, etc")
+    async def mediaperson(self, interaction: discord.Interaction):
         person = self.common_query('person')
         if person is not None:
             embed = discord.Embed(title=person['name'] + ' is known for: ')
@@ -124,13 +123,13 @@ class Hollywood(commands.Cog):
                 output_embed = await prepare_embed(embed, person['known_for'][0])
             else:
                 output_embed = embed
-            await ctx.send(embed=output_embed)
+            await interaction.response.send_message(embed=output_embed)
         else:
-            await ctx.send('I\'m having trouble querying for tv shows right now.')
+            await interaction.response.send_message('I\'m having trouble querying for tv shows right now.')
 
-    @commands.command(name="moviegenre", description="Get a random movie by genre",
-                      brief="Get a random movie by genre", usage="<genre>")
-    async def moviegenre(self, ctx, *, input_genre=None):
+    @app_commands.command(name="moviegenre", description="Get a random movie by genre")
+    @app_commands.describe(input_genre="The genre to search for")
+    async def moviegenre(self, interaction: discord.Interaction, input_genre: str):
         genre = tmdb.Genres()
         response = genre.movie_list(language='en_US')
         genres = {}
@@ -138,7 +137,7 @@ class Hollywood(commands.Cog):
             genres[genre['name'].lower()] = genre['id']
         if input_genre not in genres.keys():
             # Maybe add a wait for user to pick a correct genre? Don't want to get spammed.....
-            await ctx.send('Sorry ' + ctx.author.mention + ' that genre is not available. Please select from the '
+            await interaction.response.send_message('Sorry ' + interaction.user.mention + ' that genre is not available. Please select from the '
                            'following list of genres: ' + ', '.join(genres.keys()))
         else:
             genre_id = genres[input_genre]
@@ -146,13 +145,13 @@ class Hollywood(commands.Cog):
             if movie is not None:
                 embed = discord.Embed(title='Random ' + input_genre + ' movie')
                 output_embed = await prepare_embed(embed, movie)
-                await ctx.send(embed=output_embed)
+                await interaction.response.send_message(embed=output_embed)
             else:
-                await ctx.send('I\'m having trouble querying for movies right now.')
+                await interaction.response.send_message('I\'m having trouble querying for movies right now.')
 
-    @commands.command(name="tvgenre", description="Get a random tv show by genre",
-                      brief="Get a random tv show by genre", usage="<genre>")
-    async def tvgenre(self, ctx, *, input_genre=None):
+    @app_commands.command(name="tvgenre", description="Get a random tv show by genre")
+    @app_commands.describe(input_genre="The genre to search for")
+    async def tvgenre(self, interaction: discord.Interaction, input_genre: str):
         genre = tmdb.Genres()
         response = genre.tv_list(language='en_US')
         genres = {}
@@ -160,7 +159,7 @@ class Hollywood(commands.Cog):
             genres[genre['name'].lower()] = genre['id']
         if input_genre not in genres.keys():
             # Maybe add a wait for user to pick a correct genre? Don't want to get spammed.....
-            await ctx.send('Sorry ' + ctx.author.mention + ' that genre is not available. Please select from the '
+            await interaction.response.send_message('Sorry ' + interaction.user.mention + ' that genre is not available. Please select from the '
                            'following list of genres: ' + ', '.join(genres.keys()))
         else:
             genre_id = genres[input_genre]
@@ -168,10 +167,7 @@ class Hollywood(commands.Cog):
             if tv is not None:
                 embed = discord.Embed(title='Random ' + input_genre + ' TV show')
                 output_embed = await prepare_embed(embed, tv)
-                await ctx.send(embed=output_embed)
+                await interaction.response.send_message(embed=output_embed)
             else:
-                await ctx.send('I\'m having trouble querying for tv shows right now.')
+                await interaction.response.send_message('I\'m having trouble querying for tv shows right now.')
 
-
-def setup(bot):
-    bot.add_cog(Hollywood(bot))

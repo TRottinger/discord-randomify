@@ -37,6 +37,7 @@ class Twitch(app_commands.Group):
         log.info("resetting auth code")
         await self.twitch_helpers.refresh_access_token()
 
+    @app_commands.checks.cooldown(3, 30)
     @app_commands.command(name="stream", description="Get a link to a random streamer")
     async def stream(self, interaction: discord.Interaction):
         """
@@ -71,6 +72,7 @@ class Twitch(app_commands.Group):
                                                   game_name_picked, streamer.viewers)
             await interaction.response.send_message(result_string)
 
+    @app_commands.checks.cooldown(3, 30)
     @app_commands.command(name="game", description="Get a link to a random streamer playing a specific game")
     @app_commands.describe(game='The name of the game you want to watch')
     async def game(self, interaction: discord.Interaction, game: str):
@@ -97,10 +99,3 @@ class Twitch(app_commands.Group):
                                                   game_name_picked, streamer.viewers)
             log.info('Sending out result string: ' + result_string)
             await interaction.response.send_message(result_string)
-
-    @game.error
-    async def game_error(self, interaction: discord.Interaction, error):
-        author = interaction.user.mention
-        log.warn(error)
-        if isinstance(error, app_commands.AppCommandError):
-            await interaction.response.send_message(author + ' - Please provide an argument')

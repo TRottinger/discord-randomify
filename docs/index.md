@@ -9,6 +9,8 @@ Randomify is a Discord bot for all your random needs! It grew from
  but still developing bot. From random YouTube links to subreddits,
  Randomify can keep you busy for hours on end.
 
+NOTE: DOCUMENTATION IS OUTDATED. WE NOW USE SLASH COMMANDS
+
 ### Commands
 
 To view the current list of available commands, go to [the Commands
