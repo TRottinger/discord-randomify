@@ -3,9 +3,10 @@ import random
 import logging
 import pymongo
 
-from discord.ext import commands, tasks
+import discord
+from discord import app_commands
+from discord.ext import tasks
 from dotenv import load_dotenv
-from bot import Bot
 
 from utils.url_builder import build_url_kwargs
 from utils.http_helpers import handle_status_code
@@ -18,16 +19,17 @@ YOUTUBE_API_KEY = os.getenv('YOUTUBE_API_KEY')
 YOUTUBE_SEARCH_LIMIT_PER_HOUR = 4
 
 
-class YouTube(commands.Cog):
+class Youtube(app_commands.Group):
     """
     Main YouTube cog Class
     """
-    def __init__(self, bot):
-        self.bot: Bot = bot
+    def __init__(self, db_client, random_words):
+        super().__init__()
         # init to max so we don't run on start up
         self.queries_this_hour = YOUTUBE_SEARCH_LIMIT_PER_HOUR
         self.videos_url = 'https://youtube.googleapis.com/youtube/v3/search'
-        self.db_youtube = self.bot.db_client.get_database('YouTube')
+        self.random_words = random_words
+        self.db_youtube = db_client.get_database('YouTube')
         self.db_links_table = self.db_youtube.YoutubeLinks
         log.info('Loading YouTube cog')
         self.reset_count.start()
@@ -39,7 +41,7 @@ class YouTube(commands.Cog):
         The bot is rate limited because Google is really anal with their limits
         :return:
         """
-        random_query_word = self.bot.random_words.get_random_query_strict()
+        random_query_word = self.random_words.get_random_query_strict()
         headers = {
             'Accept': 'application/json'
         }
@@ -78,24 +80,19 @@ class YouTube(commands.Cog):
             await self.request_new_videos()
         self.queries_this_hour = 0
 
-    @commands.command(name="youtube", description="Get a link to a random youtube video", aliases=["ytube", "yt"],
-                      brief="Get a random youtube video")
-    async def youtube(self, ctx):
+    @app_commands.command(name="video", description="Get a link to a random youtube video")
+    async def video(self, interaction: discord.Interaction):
         """
         Gets a random YouTube link and returns it to the author
         """
         if self.queries_this_hour < YOUTUBE_SEARCH_LIMIT_PER_HOUR:
             await self.request_new_videos()
 
-        author = ctx.author.mention
+        author = interaction.user.mention
         videoCursor = [video for video in self.db_links_table.aggregate([{ "$sample": { "size": 1 }}])]
         if len(videoCursor) > 0:
             video = videoCursor[0]
-            await ctx.send(author + ' Check this out on YouTube: '
+            await interaction.response.send_message(author + ' Check this out on YouTube: '
                         + str(video['Link']))
         else:
-            await ctx.send(author + ' sorry :( I had issues with getting you a video.')
-
-
-def setup(bot):
-    bot.add_cog(YouTube(bot))
+            await interaction.response.send_message(author + ' sorry :( I had issues with getting you a video.')

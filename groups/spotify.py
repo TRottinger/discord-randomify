@@ -1,13 +1,14 @@
 import os
 import random
 import logging
+from typing import Optional
 import pymongo
 
 import discord
-from discord.ext import commands, tasks
+from discord import app_commands
+from discord.ext import tasks
 from dotenv import load_dotenv
 from expiringdict import ExpiringDict
-from bot import Bot
 
 from utils.url_builder import build_url_kwargs
 from utils.http_helpers import handle_status_code, get_access_token, form_auth_headers
@@ -24,20 +25,19 @@ CACHE_MINUTES = 60
 # I should look into combining them into a "media" class
 
 
-class Spotify(commands.Cog):
+class Spotify(app_commands.Group):
     """
     Main Spotify cog Class
     """
 
-    def __init__(self, bot):
-        self.bot: Bot = bot
-
-        log.info('Loading Spotify cog')
-
+    def __init__(self, db_client, random_words, loop):
+        super().__init__()
         # initialize to max so that we don't run it on init
         self.queries_this_hour = SPOTIFY_QUERY_RATE_PER_HOUR
+        self.loop = loop
+        self.random_words = random_words
         self.search_url = 'https://api.spotify.com/v1/search'
-        self.db_spotify = self.bot.db_client.get_database('Spotify')
+        self.db_spotify = db_client.get_database('Spotify')
         self.db_songs_table = self.db_spotify.SpotifySongs
         load_dotenv()
         self.spotify_client_id = os.getenv('SPOTIFY_CLIENT_ID')
@@ -59,7 +59,7 @@ class Spotify(commands.Cog):
         Rate limited to be safe
         :return:
         """
-        random_query_word = self.bot.random_words.get_random_query_strict()
+        random_query_word = self.random_words.get_random_query_strict()
         headers = form_auth_headers(self.spotify_client_id, self.access_token)
         query_url = build_url_kwargs(self.search_url, q=random_query_word, limit='50', type='track')
         response = send_get_request(query_url, headers=headers)
@@ -102,7 +102,7 @@ class Spotify(commands.Cog):
         :return:
         """
         log.info("Preparing to reset query wait for Spotify")
-        self.bot.loop.create_task(self.coro_for_request_loop())
+        self.loop.create_task(self.coro_for_request_loop())
 
     # auth code expires every 60 minutes.. so lets refresh it
     @tasks.loop(minutes=55)
@@ -119,31 +119,30 @@ class Spotify(commands.Cog):
         for item in items:
             self.podcast_cache[item['name']] = item
 
-    @commands.command(name="song", description="Get a link to a random Spotify song", aliases=["spotify"],
-                      brief="Get a random Spotify song")
-    async def song(self, ctx):
+    @app_commands.command(name="song", description="Get a link to a random Spotify song")
+    async def song(self, interaction: discord.Interaction):
         """
         Gets a random Spotify song link and return it to the user
         """
         if self.queries_this_hour < SPOTIFY_QUERY_RATE_PER_HOUR:
             await self.request_new_songs()
 
-        author = ctx.author.mention
+        author = interaction.user.mention
         songCursor = [song for song in self.db_songs_table.aggregate([{ "$sample": { "size": 1 }}])]
         if len(songCursor) > 0:
             song = songCursor[0]
-            await ctx.send(author + ' Check this out on Spotify: '
+            await interaction.response.send_message(author + ' Check this out on Spotify: '
                         + str(song['Link']))
         else:
-            await ctx.send(author + ' sorry :( I had issues with getting you a song.')
+            await interaction.response.send_message(author + ' sorry :( I had issues with getting you a song.')
 
-    @commands.cooldown(10, 60, commands.BucketType.user)
-    @commands.command(name="artist", description="Get a link to a random Spotify artist", brief="Random Spotify artist")
-    async def artist(self, ctx):
+    @app_commands.checks.cooldown(3, 30)
+    @app_commands.command(name="artist", description="Get a link to a random Spotify artist")
+    async def artist(self, interaction: discord.Interaction):
         """
         Get a random Spotify artist and return it to the user
         """
-        query = self.bot.random_words.get_random_query_strict()
+        query = self.random_words.get_random_query_strict()
         headers = form_auth_headers(self.spotify_client_id, self.access_token)
         query_url = build_url_kwargs(self.search_url, q=query, type='artist', limit='50')
         response = send_get_request(query_url, headers)
@@ -159,7 +158,7 @@ class Spotify(commands.Cog):
             else:
                 log.warning('Had trouble and got no artists back')
                 log.warning('Return: ' + str(response.json()))
-                await ctx.send('I had trouble finding an artist')
+                await interaction.response.send_message('I had trouble finding an artist')
                 return
             embed = discord.Embed(title='Random Artist')
             embed.add_field(name='Artist', value=choice['name'], inline=False)
@@ -169,21 +168,21 @@ class Spotify(commands.Cog):
             embed.add_field(name='Popularity', value=choice['popularity'], inline=True)
             embed.add_field(name='Followers', value=choice['followers']['total'], inline=True)
             embed.colour = discord.Colour.green()
-            await ctx.send(embed=embed)
+            await interaction.response.send_message(embed=embed)
         else:
             log.warning('Had trouble and got status code: ' + str(status_code))
-            await ctx.send('I had trouble finding an artist')
+            await interaction.response.send_message('I had trouble finding an artist')
 
-    @commands.cooldown(10, 60, commands.BucketType.user)
-    @commands.command(name="podcast", description="Get a link to a random Spotify podcast",
-                      brief="Random Spotify podcast")
-    async def podcast(self, ctx, market='US'):
+    @app_commands.checks.cooldown(3, 30)
+    @app_commands.command(name="podcast", description="Get a link to a random Spotify podcast")
+    @app_commands.describe(market="Your ISO country code. Defaults to US")
+    async def podcast(self, interaction: discord.Interaction, market: Optional[str] = "US"):
         """
         Get a random Spotify podcast and return it to the user
         Non-Explicit only
         Pass in a custom market for your country. Please use the correct ISO 3166-1 alpha-2 country code
         """
-        query = self.bot.random_words.get_random_query_strict()
+        query = self.random_words.get_random_query_strict()
         headers = form_auth_headers(self.spotify_client_id, self.access_token)
         query_url = build_url_kwargs(self.search_url, q=query, type='show', market=market, limit='50')
         response = send_get_request(query_url, headers)
@@ -205,7 +204,7 @@ class Spotify(commands.Cog):
                     choice = random.choice(list(self.podcast_cache.values()))
                 else:
                     log.warning('No good shows. Must have gotten a bad word')
-                    await ctx.send('I had trouble finding a podcast')
+                    await interaction.response.send_message('I had trouble finding a podcast')
                     return
                 embed = discord.Embed(title='Random Podcast')
                 embed.add_field(name='Podcast', value=choice['name'], inline=False)
@@ -213,15 +212,12 @@ class Spotify(commands.Cog):
                 embed.add_field(name='Episodes', value=choice['total_episodes'], inline=False)
                 embed.add_field(name='Link', value=choice['external_urls']['spotify'], inline=False)
                 embed.colour = discord.Colour.green()
-                await ctx.send(embed=embed)
+                await interaction.response.send_message(embed=embed)
             else:
                 log.warning('Had trouble and got no shows back')
                 log.warning('Return: ' + str(response.json()))
-                await ctx.send('I had trouble finding a podcast')
+                await interaction.response.send_message('I had trouble finding a podcast')
         else:
             log.warning('Had trouble and got status code: ' + str(status_code))
-            await ctx.send('I had trouble finding a podcast')
+            await interaction.response.send_message('I had trouble finding a podcast')
 
-
-def setup(bot):
-    bot.add_cog(Spotify(bot))

@@ -1,7 +1,8 @@
 import os
 import random
 
-from discord.ext import commands
+import discord
+from discord import app_commands
 from urllib.request import Request
 import urllib.error
 import discord
@@ -14,9 +15,9 @@ from dotenv import load_dotenv
 log = logging.getLogger(__name__)
 
 
-class Reddit(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
+class Reddit(app_commands.Group):
+    def __init__(self):
+        super().__init__()
         load_dotenv()
         self.client_id = os.getenv('REDDIT_CLIENT_ID')
         self.client_secret = os.getenv('REDDIT_CLIENT_SECRET')
@@ -25,13 +26,8 @@ class Reddit(commands.Cog):
                                        user_agent=self.user_agent)
         self.subreddit_cache = []
 
-    @commands.Cog.listener()
-    async def on_ready(self):
-        log.info('Loading Reddit cog')
-
-    @commands.command(name="reddit", description="Get a link to a random subreddit", brief="Get a random subreddit",
-                      aliases=["subreddit"])
-    async def reddit(self, ctx):
+    @app_commands.command(name="reddit", description="Get a link to a random subreddit")
+    async def reddit(self, interaction: discord.Interaction):
         subreddit = await self.reddit.random_subreddit(nsfw=False)
         if subreddit is None:
             subreddit = random.choice(self.subreddit_cache)
@@ -48,8 +44,5 @@ class Reddit(commands.Cog):
             embed.add_field(name='NSFW', value=str(subreddit.over18), inline=False)
         if subreddit.display_name is not None:
             embed.add_field(name='Link', value="http://www.reddit.com/r/" + str(subreddit.display_name), inline=False)
-        await ctx.send(embed=embed)
+        await interaction.response.send_message(embed=embed)
 
-
-def setup(bot):
-    bot.add_cog(Reddit(bot))

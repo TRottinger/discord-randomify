@@ -6,10 +6,12 @@ import logging
 import random
 
 import discord
-from discord.ext import commands, tasks
+from discord import app_commands
+from discord.ext import tasks
 from mal import *
 
 from utils import http_helpers
+from utils.common_utils import RandomQuery
 
 log = logging.getLogger(__name__)
 
@@ -25,10 +27,11 @@ async def populate_embed(choice, embed):
     return embed
 
 
-class Anime(commands.Cog):
-    def __init__(self, bot):
+class Anime(app_commands.Group):
+    def __init__(self, random_words: RandomQuery):
+        super().__init__()
         log.info('Loading Anime cog')
-        self.bot = bot
+        self.random_words = random_words
         self.anime_cache = ExpiringDict(max_len=5000, max_age_seconds=900)
         self.manga_cache = ExpiringDict(max_len=5000, max_age_seconds=900)
         self.waifu_cache = ExpiringDict(max_len=5000, max_age_seconds=60*60*24)
@@ -51,12 +54,12 @@ class Anime(commands.Cog):
         for item in items:
             self.manga_cache[item.mal_id] = item
 
-    @commands.command(name="anime", description="Get a random anime", brief="Get a random anime. SFW")
-    async def anime(self, ctx):
+    @app_commands.command(name="anime", description="Get a random anime")
+    async def anime(self, interaction: discord.Interaction):
         """
         Queries the MAL api with a random word to get an anime
         """
-        query_word = self.bot.random_words.get_random_query_strict()
+        query_word = self.random_words.get_random_query_strict()
         # exclude NFSW categories
         query = query_word + '&genre_ex%5B%5D=9&genre_ex%5B%5D=49&genre_ex%5B%5D=12'
         try:
@@ -64,7 +67,7 @@ class Anime(commands.Cog):
         except Exception as e:
             log.warning('Trouble querying anime')
             log.warning(str(e))
-            await ctx.send('I had trouble processing the request')
+            await interaction.response.send_message('I had trouble processing the request')
             return
 
         if len(search.results) == 0:
@@ -77,20 +80,20 @@ class Anime(commands.Cog):
             choice = random.choice(search.results)
 
         if choice is None:
-            await ctx.send('I had trouble processing the request')
+            await interaction.response.send_message('I had trouble processing the request')
         else:
             embed = discord.Embed(title='Random Anime')
             log.info('Choice found: ' + str(choice.title))
             await self.cache_anime(search.results)
             output_embed = await populate_embed(choice, embed)
-            await ctx.send(embed=output_embed)
+            await interaction.response.send_message(embed=output_embed)
 
-    @commands.command(name="manga", description="Get a random manga", brief="Get a random manga. SFW")
-    async def manga(self, ctx):
+    @app_commands.command(name="manga", description="Get a random manga")
+    async def manga(self, interaction: discord.Interaction):
         """
         Queries the MAL api with a random word to get a manga
         """
-        query_word = self.bot.random_words.get_random_query_strict()
+        query_word = self.random_words.get_random_query_strict()
         # exclude NFSW categories
         query = query_word + '&genre_ex%5B%5D=9&genre_ex%5B%5D=49&genre_ex%5B%5D=12'
         try:
@@ -98,7 +101,7 @@ class Anime(commands.Cog):
         except Exception as e:
             log.warning('Trouble querying manga')
             log.warning(str(e))
-            await ctx.send('I had trouble processing the request')
+            await interaction.response.send_message('I had trouble processing the request')
             return
 
         if len(search.results) == 0:
@@ -110,31 +113,17 @@ class Anime(commands.Cog):
             choice = random.choice(search.results)
 
         if choice is None:
-            await ctx.send('I had trouble processing the request')
+            await interaction.response.send_message('I had trouble processing the request')
         else:
             embed = discord.Embed(title='Random Manga')
             log.info('Choice found: ' + str(choice.title))
             await self.cache_manga(search.results)
             output_embed = await populate_embed(choice, embed)
-            await ctx.send(embed=output_embed)
+            await interaction.response.send_message(embed=output_embed)
 
-    @commands.command(name="waifu", description="Get a random waifu", brief="Get a random waifu. SFW")
-    async def waifu(self, ctx):
+    @app_commands.command(name="waifu", description="Get a random waifu")
+    async def waifu(self, interaction: discord.Interaction):
         url = "https://mywaifulist.moe/random"
-
-        # 'Premium' command. Check if user voted for bot
-        topgg = self.bot.get_cog('TopGG')
-        if topgg is not None:
-            voted = await topgg.get_if_user_voted(ctx.author.id)
-        else:
-            voted = True
-
-        if voted is not True:
-            await ctx.send(ctx.author.mention + ' sorry! That command is locked to people who upvote the bot. Please '
-                                                'visit https://top.gg/bot/770197604155785216 to upvote. It really helps'
-                                                ' a lot!')
-            return
-
         if self.waifu_limit < WAIFU_REQUESTS_PER_MINUTE:
             try:
                 urlopen = urllib.request.Request(url)
@@ -152,9 +141,4 @@ class Anime(commands.Cog):
                 result = random.choice(list(self.waifu_cache.values()))
             else:
                 result = 'I\'m being rate limited, so manually click this: ' + url
-        author = ctx.author.mention
-        await ctx.send(author + ' ' + result + '')
-
-
-def setup(bot):
-    bot.add_cog(Anime(bot))
+        await interaction.response.send_message(interaction.user.mention + ' ' + result + '')
