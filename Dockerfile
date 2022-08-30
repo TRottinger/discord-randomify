@@ -12,7 +12,7 @@ RUN pip install -r requirements.txt
 
 # copy the content of the local src directory to the working directory
 COPY utils/ utils/
-COPY cogs/ cogs/
+COPY groups/ groups/
 COPY bot.py .
 COPY startup.py .
 # command to run on container start
